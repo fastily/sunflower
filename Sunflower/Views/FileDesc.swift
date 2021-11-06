@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct FileDesc: View {
-    @Binding var f: Media
+    @State var f: Media
     
     var body: some View {
         
@@ -13,7 +13,7 @@ struct FileDesc: View {
 
 struct FileDesc_Previews: PreviewProvider {
     static var previews: some View {
-        FileDesc(f: .constant(Media()))
+        FileDesc(f: Media(path: URL(string: "file:///Example.jpg")!))
             .frame(minWidth: 900, minHeight: 500)
     }
 }

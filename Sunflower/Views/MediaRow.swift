@@ -2,7 +2,7 @@ import SwiftUI
 
 struct MediaRow: View {
     
-    var f: Media
+    @Binding var f: Media
     
     var body: some View {
         HStack {
@@ -10,11 +10,9 @@ struct MediaRow: View {
                 .resizable()
                 .frame(width: 50, height: 50)
                 .cornerRadius(5)
-            VStack(alignment:.leading) {
-                Text("Example.jpg")
-                    .font(.headline)
-
-            }
+            
+            Text(f.name)
+                .padding(.leading, 10)
             
             Spacer()
             
@@ -34,8 +32,8 @@ struct MediaRow: View {
 struct MediaRow_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            MediaRow(f: Media())
-            MediaRow(f:Media(isUploaded: true))
+            MediaRow(f: .constant(Media(path: URL(string: "file:///Example.jpg")!)))
+            MediaRow(f: .constant(Media(isUploaded: true, path: URL(string: "file:///Example.jpg")!)))
         }
         .previewLayout(.fixed(width: 300, height: 70))
         

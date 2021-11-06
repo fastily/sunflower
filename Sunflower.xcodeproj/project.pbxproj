@@ -88,12 +88,12 @@
 			isa = PBXGroup;
 			children = (
 				707250A22728191000D79682 /* Sunflower.entitlements */,
-				7072509D2728191000D79682 /* Assets.xcassets */,
 				707250992728190E00D79682 /* SunflowerApp.swift */,
+				7010C8B1272E38C900A6EE1F /* SunflowerCommands.swift */,
+				7072509D2728191000D79682 /* Assets.xcassets */,
 				70663CC4272C0B81008759BE /* Models */,
 				7072509F2728191000D79682 /* Preview Content */,
 				7066876A27282AE5002E900D /* Views */,
-				7010C8B1272E38C900A6EE1F /* SunflowerCommands.swift */,
 			);
 			path = Sunflower;
 			sourceTree = "<group>";
@@ -318,6 +318,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Sunflower/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -343,6 +344,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Sunflower/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
