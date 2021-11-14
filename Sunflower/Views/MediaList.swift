@@ -19,7 +19,7 @@ struct MediaList: View {
             Button(action: {
                 showingGlobalConfig = true
             }) {
-                Label("Create Event", systemImage: "calendar.badge.plus")
+                Label("Edit Global Config", systemImage: "doc.badge.gearshape")
             }
             .buttonStyle(PlainButtonStyle()) // show plain buttons for mac
             .padding(.bottom, 5)
@@ -34,25 +34,39 @@ struct MediaList: View {
     
     var body: some View {
         
+//        ForEach($modelData.ulStatus, id: \.path) { $u in
+//
+//            if let $m = $modelData.ml[u.path, default:Media(path: URL(string: "file:///Example.jpg")!)] {
+//                NavigationLink(destination: FileDesc(f: $m)) {
+//                    //                MediaRow(f: $u)
+//                    //                    .tag(u)
+//                    EmptyView()
+//                }
+//            }
+//        }
+        
         
         NavigationView {
             Group {
-                if modelData.fl.isEmpty {
-                    Text("Click the [ + ] icon to add media")
+                if modelData.ml.isEmpty {
+                    Text("Click the [+] icon to add media")
                     
                 }
                 else {
                     List(selection: $selectedMedia) {
                         
                         Section(header: Text("Files to Upload")) {
-                            ForEach($modelData.fl) { $m in
-                                NavigationLink(destination: FileDesc(f: m)) {
-                                    MediaRow(f: $m)
-                                        .tag(m)
+                            
+                            ForEach(modelData.ulStatus, id: \.path) { uploadStatus in
+                                NavigationLink(destination: FileDesc(f: modelData.ml[uploadStatus.path]!)) {
+                                    MediaRow(f: modelData.ml[uploadStatus.path]!, uploadStatus: uploadStatus)
+                                        .tag(uploadStatus)
                                 }
                             }
+                            
                         }
                     }
+                    .id(UUID())
                     .padding(.bottom)
                     .overlay(bottomSidebarView, alignment: .bottom)
                 }
@@ -64,9 +78,18 @@ struct MediaList: View {
                 Button(action: {
                     let panel = NSOpenPanel()
                     if panel.runModal() == .OK {
-                        modelData.fl.append(contentsOf: panel.urls.map { url in
-                            Media(path: url)
-                        })
+                        
+                        
+//                        modelData.fl.append(contentsOf: panel.urls.map { Media(path: $0) })
+                        
+                        for u in panel.urls {
+                            modelData.ml[u] = Media(path: u)
+                        }
+
+                        modelData.ulStatus.append(contentsOf: panel.urls.map { UploadStatus($0) })
+                        
+                        print(modelData.ulStatus)
+                        
                     }
                 }) {
                     Label("Add", systemImage: "plus.app")
@@ -100,7 +123,7 @@ struct MediaList_Previews: PreviewProvider {
         MediaList()
             .environmentObject(ModelData([
                 Media(path: URL(string: "file:///Example.jpg")!),
-                Media(isUploaded: true, path: URL(string: "file:///Example.jpg")!)
+                Media(path: URL(string: "file:///Example.jpg")!, isUploaded: true)
             ]))
     }
 }

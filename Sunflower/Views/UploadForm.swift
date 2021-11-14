@@ -12,22 +12,29 @@ import SwiftUI
 
 struct UploadForm: View {
     
-    @Binding var d: Desc
+    @ObservedObject var d: Desc
+    
+    var showTitleField = true
     
     var body: some View {
         ScrollView {
             Form {
+                if showTitleField {
+                    Section(header: Text("Title")) {
+                        TextField("", text:$d.title)
+                    }
+                }
+                
                 Section(header: Text("Description")) {
                     TextEditor(text: $d.desc)
-                        .textFieldStyle(PlainTextFieldStyle())
+//                        .textFieldStyle(PlainTextFieldStyle())
                         .frame(minHeight: 50, alignment: .leading)
-                        .background(Color(NSColor.underPageBackgroundColor))
+//                        .background(Color(NSColor.underPageBackgroundColor))
 //                        .opacity(0.9)
                     
 //                    static let background = Color(NSColor.windowBackgroundColor)
 //                    static let secondaryBackground = Color(NSColor.underPageBackgroundColor)
 //                    static let tertiaryBackground = Color(NSColor.controlBackgroundColor)
-                    
                 }
                 
                 
@@ -61,6 +68,6 @@ struct UploadForm: View {
 
 struct UploadForm_Previews: PreviewProvider {
     static var previews: some View {
-        UploadForm(d: .constant(Desc()))
+        UploadForm(d: Desc())
     }
 }

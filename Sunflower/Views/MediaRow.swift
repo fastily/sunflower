@@ -2,13 +2,18 @@ import SwiftUI
 
 struct MediaRow: View {
     
-    @Binding var f: Media
+//    @Binding var f: Media
+    
+    var f: Media
+    
+    @ObservedObject var uploadStatus: UploadStatus
     
     var body: some View {
         HStack {
             f.thumb
                 .resizable()
-                .frame(width: 50, height: 50)
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 55, height: 55)
                 .cornerRadius(5)
             
             Text(f.name)
@@ -16,7 +21,7 @@ struct MediaRow: View {
             
             Spacer()
             
-            if f.isUploaded {
+            if uploadStatus.isUploaded {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundColor(.green)
             }
@@ -30,10 +35,13 @@ struct MediaRow: View {
 }
 
 struct MediaRow_Previews: PreviewProvider {
+    
+    private static var p = URL(string: "file:///Example.jpg")!
+    
     static var previews: some View {
         Group {
-            MediaRow(f: .constant(Media(path: URL(string: "file:///Example.jpg")!)))
-            MediaRow(f: .constant(Media(isUploaded: true, path: URL(string: "file:///Example.jpg")!)))
+            MediaRow(f: Media(path: p), uploadStatus: UploadStatus(p))
+//            MediaRow(f: Media(path: URL(string: "file:///Example.jpg")!, uploadStatus: UploadStatus())
         }
         .previewLayout(.fixed(width: 300, height: 70))
         

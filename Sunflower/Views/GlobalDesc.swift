@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct GlobalDesc: View {
@@ -8,7 +9,7 @@ struct GlobalDesc: View {
     
     var body: some View {
         
-        UploadForm(d: $modelData.globalDesc)
+        UploadForm(d: modelData.globalDesc, showTitleField: false)
             .navigationTitle("Global Upload Settings")
         //                .padding(.leading, 30)
         //                .padding(.top, 30)
@@ -18,6 +19,8 @@ struct GlobalDesc: View {
         Button("Done") {
             //            DataController.shared.saveHypedEvent(hypedEvent: hypedEvent)
             presentationMode.wrappedValue.dismiss()
+            NSApp.mainWindow?.endSheet(NSApp.keyWindow!) // workaround SwiftUI to show dismiss animation
+            
         }.keyboardShortcut(.defaultAction)
         
     }

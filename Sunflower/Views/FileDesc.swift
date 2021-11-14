@@ -1,11 +1,15 @@
 import SwiftUI
 
 struct FileDesc: View {
-    @State var f: Media
+//    @Binding var f: Media
+    
+//    @ObservedObject var f: Media
+    
+    var f: Media
     
     var body: some View {
         
-        UploadForm(d: $f.details)
+        UploadForm(d: f.details)
             .navigationTitle("Details for \(f.name)")
             .padding(30)
     }
