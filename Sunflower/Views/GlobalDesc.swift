@@ -9,26 +9,24 @@ struct GlobalDesc: View {
     
     var body: some View {
         
-        UploadForm(d: modelData.globalDesc, showTitleField: false)
-            .navigationTitle("Global Upload Settings")
-        //                .padding(.leading, 30)
-        //                .padding(.top, 30)
-            .padding(30)
-            .frame(minWidth:800, minHeight:600)
-        
-        Button("Done") {
-            //            DataController.shared.saveHypedEvent(hypedEvent: hypedEvent)
-            presentationMode.wrappedValue.dismiss()
-            NSApp.mainWindow?.endSheet(NSApp.keyWindow!) // workaround SwiftUI to show dismiss animation
+        ScrollView {
+            UploadForm(d: modelData.globalDesc, showTitleField: false)
+                .padding()
             
-        }.keyboardShortcut(.defaultAction)
+            Button("Done") {
+                presentationMode.wrappedValue.dismiss()
+                NSApp.mainWindow?.endSheet(NSApp.keyWindow!) // workaround SwiftUI to show dismiss animation
+                
+            }.keyboardShortcut(.defaultAction)
+        }
+        .frame(minWidth:800, minHeight:400)
+        .padding()
+        .navigationTitle("Edit Global Description")
         
     }
 }
 
 struct GlobalDesc_Previews: PreviewProvider {
-    
-    
     static var previews: some View {
         GlobalDesc()
             .environmentObject(ModelData())

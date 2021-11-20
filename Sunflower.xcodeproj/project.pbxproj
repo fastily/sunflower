@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7010C8B2272E38C900A6EE1F /* SunflowerCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7010C8B1272E38C900A6EE1F /* SunflowerCommands.swift */; };
+		7039F50B27491845005D8F23 /* BottomSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7039F50A27491845005D8F23 /* BottomSidebarView.swift */; };
 		70663CC1272C09A8008759BE /* GlobalDesc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70663CC0272C09A8008759BE /* GlobalDesc.swift */; };
 		7072509A2728190E00D79682 /* SunflowerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707250992728190E00D79682 /* SunflowerApp.swift */; };
 		7072509C2728190E00D79682 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7072509B2728190E00D79682 /* ContentView.swift */; };
@@ -22,6 +23,7 @@
 
 /* Begin PBXFileReference section */
 		7010C8B1272E38C900A6EE1F /* SunflowerCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunflowerCommands.swift; sourceTree = "<group>"; };
+		7039F50A27491845005D8F23 /* BottomSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSidebarView.swift; sourceTree = "<group>"; };
 		70663CC0272C09A8008759BE /* GlobalDesc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalDesc.swift; sourceTree = "<group>"; };
 		707250962728190E00D79682 /* Sunflower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sunflower.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		707250992728190E00D79682 /* SunflowerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunflowerApp.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 				70663CC0272C09A8008759BE /* GlobalDesc.swift */,
 				70D53A98272EC046009F165A /* UploadForm.swift */,
 				70D53A9A272EC2B6009F165A /* FileDesc.swift */,
+				7039F50A27491845005D8F23 /* BottomSidebarView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -178,6 +181,7 @@
 			files = (
 				7072509C2728190E00D79682 /* ContentView.swift in Sources */,
 				7010C8B2272E38C900A6EE1F /* SunflowerCommands.swift in Sources */,
+				7039F50B27491845005D8F23 /* BottomSidebarView.swift in Sources */,
 				7072509A2728190E00D79682 /* SunflowerApp.swift in Sources */,
 				707250AF2728289C00D79682 /* MediaList.swift in Sources */,
 				70D53A9B272EC2B6009F165A /* FileDesc.swift in Sources */,

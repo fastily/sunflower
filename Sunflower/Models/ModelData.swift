@@ -15,33 +15,40 @@ class Desc: ObservableObject {
 }
 
 
+/// Enum which represents the upload status of a file.  Supports the UploadStatus class.
+enum Status {
+    case standby, success, error
+}
 
 class UploadStatus: Hashable, ObservableObject {
     var path: URL
     
-    @Published var isUploaded = false
+    /// The actual upload status
+    @Published var status: Status
     
-    init(_ path: URL) {
+//    @Published var isUploaded = false
+    
+    init(_ path: URL, _ status: Status = .standby) {
         self.path = path
+        self.status = status
     }
-    
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(path)
     }
     
+    /// Makes this object comparable.  Objects are equal if they have the same path
+    /// - Returns: true if the two UploadStatus objects are equal
     static func == (lhs: UploadStatus, rhs: UploadStatus) -> Bool {
         lhs.path == rhs.path
     }
 }
 
 
-class Media: Hashable {
-//    var id = UUID()
-    
+class Media: Hashable {   
     var details = Desc()
     
-    var isUploaded = false
+//    var isUploaded = false
      
     var path: URL
     
@@ -57,12 +64,10 @@ class Media: Hashable {
         return Image(nsImage: img)
     }
     
-    
-    
-    init(path: URL, isUploaded: Bool = false) {
+    init(path: URL) {
         self.path = path
         
-        self.isUploaded = isUploaded
+//        self.isUploaded = isUploaded
     }
     
     func hash(into hasher: inout Hasher) {
@@ -76,28 +81,12 @@ class Media: Hashable {
 
 
 class ModelData: ObservableObject {
-   
     var globalDesc = Desc()
-    
-    var fl = [Media]()
     
     @Published var ml = [URL:Media]()
     
     @Published var ulStatus = [UploadStatus]()
     
-    
-    init() {
-        
-    }
-    
-    init(_ fl:[Media]) {
-        self.fl = fl
-    }
-    
 //    // hike data never changes, so no need to mark it as @Published
 //    var hikes: [Hike] = load("hikeData.json")
-    
-
-    
 }
-
