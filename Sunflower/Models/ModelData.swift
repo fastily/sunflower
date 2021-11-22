@@ -47,8 +47,6 @@ class UploadStatus: Hashable, ObservableObject {
 
 class Media: Hashable {   
     var details = Desc()
-    
-//    var isUploaded = false
      
     var path: URL
     
@@ -57,22 +55,54 @@ class Media: Hashable {
     }
     
     var thumb: Image {
-        guard let img = NSImage(byReferencingFile: path.path) else {
+//        guard let img = NSImage(byReferencingFile: path.path) else {
+//            return Image("Example")
+//        }
+  
+//        return Image(nsImage: img)
+        
+        guard let img = downsample(imageAt: path) else {
             return Image("Example")
         }
         
-        return Image(nsImage: img)
+        return img
     }
     
     init(path: URL) {
         self.path = path
-        
-//        self.isUploaded = isUploaded
     }
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(path)
     }
+    
+    // inspired by https://medium.com/@zippicoder/downsampling-images-for-better-memory-consumption-and-uicollectionview-performance-35e0b4526425
+    func downsample(imageAt imageURL: URL, to pointSize: CGSize = CGSize(width: 75, height: 75), scale: CGFloat = 1.0) -> Image? {
+
+        // Create an CGImageSource that represent an image
+        let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
+        guard let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, imageSourceOptions) else {
+            return nil
+        }
+        
+        // Calculate the desired dimension
+        let maxDimensionInPixels = max(pointSize.width, pointSize.height) * scale
+        
+        // Perform downsampling
+        let downsampleOptions = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceShouldCacheImmediately: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceThumbnailMaxPixelSize: maxDimensionInPixels
+        ] as CFDictionary
+        guard let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, downsampleOptions) else {
+            return nil
+        }
+        
+        // Return the downsampled image as UIImage
+        return Image(decorative: downsampledImage, scale:scale)
+    }
+    
     
     static func == (lhs: Media, rhs: Media) -> Bool {
         lhs.path == rhs.path

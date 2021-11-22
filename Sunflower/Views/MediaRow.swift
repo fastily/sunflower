@@ -2,14 +2,12 @@ import SwiftUI
 
 struct MediaRow: View {
     
-//    @Binding var f: Media
-    
     var f: Media
     
     @ObservedObject var uploadStatus: UploadStatus
     
     var body: some View {
-        HStack {
+        LazyHStack {
             f.thumb
                 .resizable()
                 .aspectRatio(contentMode: .fill)
@@ -23,24 +21,12 @@ struct MediaRow: View {
             
             switch uploadStatus.status {
             case .standby:
-//                makeImg("checkmark.circle.fill", .green)
                 EmptyView()
             case .success:
                 makeImg("checkmark.circle.fill", .green)
-//            case .uploading:
-//                makeImg("clock.fill", .yellow)
             case .error:
                 makeImg("x.circle.fill", .red)
             }
-            
-//            if uploadStatus.isUploaded {
-//                Image(systemName: "checkmark.circle.fill")
-//                    .foregroundColor(.green)
-//            }
-//            else {
-//                ProgressView()
-//                    .scaleEffect(0.7)
-//            }
         }
         .padding()
     }
@@ -48,6 +34,7 @@ struct MediaRow: View {
     func makeImg(_ name: String, _ color: Color) -> some View {
         Image(systemName: name)
             .foregroundColor(color)
+            .font(.title2)
     }
     
 }
@@ -59,10 +46,8 @@ struct MediaRow_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             MediaRow(f: Media(path: p), uploadStatus: UploadStatus(p))
-//            MediaRow(f: Media(path: p), uploadStatus: UploadStatus(p, .uploading))
             MediaRow(f: Media(path: p), uploadStatus: UploadStatus(p, .success))
             MediaRow(f: Media(path: p), uploadStatus: UploadStatus(p, .error))
-//            MediaRow(f: Media(path: URL(string: "file:///Example.jpg")!, uploadStatus: UploadStatus())
         }
         .previewLayout(.fixed(width: 300, height: 70))
         

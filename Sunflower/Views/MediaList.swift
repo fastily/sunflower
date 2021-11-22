@@ -3,49 +3,34 @@ import SwiftUI
 
 struct MediaList: View {
     
-    //    @Environment(\.presentationMode) var presentationMode
-    
     @EnvironmentObject var modelData: ModelData
     
-    @State private var selectedMedia: Media?
+    @State private var selectedMedia: UploadStatus?
+    
+    @State private var isShowingEmptyView = false
     
     var body: some View {
         
-        //        ForEach($modelData.ulStatus, id: \.path) { $u in
-        //
-        //            if let $m = $modelData.ml[u.path, default:Media(path: URL(string: "file:///Example.jpg")!)] {
-        //                NavigationLink(destination: FileDesc(f: $m)) {
-        //                    //                MediaRow(f: $u)
-        //                    //                    .tag(u)
-        //                    EmptyView()
-        //                }
-        //            }
-        //        }
-        
-        
         NavigationView {
             VStack {
-//                if modelData.ml.isEmpty {
-//                    Text("Click the [+] icon to add media")
-//                }
-//                else {
-                    List(selection: $selectedMedia) {
-                        
-                        Section(header: Text("Files to Upload")) {
-                            
-                            ForEach(modelData.ulStatus, id: \.path) { uploadStatus in
-                                NavigationLink(destination: FileDesc(f: modelData.ml[uploadStatus.path]!)) {
-                                    MediaRow(f: modelData.ml[uploadStatus.path]!, uploadStatus: uploadStatus)
-                                        .tag(uploadStatus)
-                                }
+                List(selection: $selectedMedia) {
+                    
+                    Section(header: Text("Files to Upload")) {
+                        ForEach(modelData.ulStatus, id: \.path) { uploadStatus in
+                            NavigationLink(destination: FileDesc(f: modelData.ml[uploadStatus.path]!)) {
+                                MediaRow(f: modelData.ml[uploadStatus.path]!, uploadStatus: uploadStatus)
                             }
-                            
+                            .tag(uploadStatus)
                         }
+                        
                     }
-                    .id(UUID())
-                    .padding(.bottom)
-                    .overlay(BottomSidebarView(), alignment: .bottom)
-//                }
+                    .collapsible(false)
+                    
+                }
+                
+//                .id(UUID())
+                .padding(.bottom)
+                .overlay(BottomSidebarView(), alignment: .bottom)
             }
             .frame(minWidth: 350)
             .toolbar {
@@ -54,7 +39,6 @@ struct MediaList: View {
                 Button(action: {
                     let panel = NSOpenPanel()
                     panel.allowsMultipleSelection = true
-                    
                     
                     if panel.runModal() == .OK {
                         //                        modelData.fl.append(contentsOf: panel.urls.map { Media(path: $0) })
@@ -73,11 +57,30 @@ struct MediaList: View {
                 }
                 
                 // remove elements
-                Button(action: {
-                    print("Trash clicked")
-                }) {
-                    Label("Remove", systemImage: "trash")
-                }
+//                Button(action: {
+//                    if let sm = selectedMedia {
+//
+//                        print("Here!")
+//
+//                        modelData.ulStatus.removeAll {
+//                            $0.path == sm.path
+//                        }
+//
+//                        modelData.ml.removeValue(forKey: sm.path)
+//
+//                        print("Removed \(sm.path)")
+//
+//                        selectedMedia = nil
+//                        isShowingEmptyView = true
+////                        print("selected media is \(selectedMedia)")
+//                    }
+//
+//
+//                    print("now here!")
+//
+//                }) {
+//                    Label("Remove", systemImage: "trash")
+//                }
                 
                 Spacer()
                 
@@ -91,15 +94,20 @@ struct MediaList: View {
                 
             }
             
-            Text("Click [+] to add media")
-//                .toolbar {
-//
-//                    Button(action: {
-//                        print("Trash clicked 2")
-//                    }) {
-//                        Label("Remove", systemImage: "trash")
-//                    }
-//                }
+            if modelData.ml.isEmpty {
+                Text("Click [+] to add media")
+            }
+            
+//            NavigationLink(destination: Text("Second View"), isActive: $isShowingEmptyView) { EmptyView() }
+            
+            //                .toolbar {
+            //
+            //                    Button(action: {
+            //                        print("Trash clicked 2")
+            //                    }) {
+            //                        Label("Remove", systemImage: "trash")
+            //                    }
+            //                }
             
         }
         .frame(minWidth: 1000, minHeight: 600)
