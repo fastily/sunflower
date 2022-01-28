@@ -109,9 +109,15 @@ class Media: Hashable {
     }
 }
 
+enum MainButtonState {
+    case notLoggedIn, standby, inProgress
+}
+
 
 class ModelData: ObservableObject {
     var globalDesc = Desc()
+    
+    @Published var mainButtonState = MainButtonState.notLoggedIn
     
     @Published var ml = [URL:Media]()
     

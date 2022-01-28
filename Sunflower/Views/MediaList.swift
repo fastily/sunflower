@@ -9,6 +9,10 @@ struct MediaList: View {
     
     @State private var isShowingEmptyView = false
     
+    @State private var showingPopover = false
+
+    @State private var showingLogin = false
+
     var body: some View {
         
         NavigationView {
@@ -28,7 +32,7 @@ struct MediaList: View {
                     
                 }
                 
-//                .id(UUID())
+                //                .id(UUID())
                 .padding(.bottom)
                 .overlay(BottomSidebarView(), alignment: .bottom)
             }
@@ -56,58 +60,60 @@ struct MediaList: View {
                     Label("Add", systemImage: "plus.app")
                 }
                 
-                // remove elements
-//                Button(action: {
-//                    if let sm = selectedMedia {
-//
-//                        print("Here!")
-//
-//                        modelData.ulStatus.removeAll {
-//                            $0.path == sm.path
-//                        }
-//
-//                        modelData.ml.removeValue(forKey: sm.path)
-//
-//                        print("Removed \(sm.path)")
-//
-//                        selectedMedia = nil
-//                        isShowingEmptyView = true
-////                        print("selected media is \(selectedMedia)")
-//                    }
-//
-//
-//                    print("now here!")
-//
-//                }) {
-//                    Label("Remove", systemImage: "trash")
-//                }
-                
                 Spacer()
                 
                 // start upload
-                Button(action: {
-                    print("Upload")
-                }) {
-                    Label("Add", systemImage: "play.fill")
+                
+                switch(modelData.mainButtonState){
+                case .notLoggedIn:
+                    Button(action: {
+//                        print("Login")
+                        print(HTTPCookieStorage.shared.cookies!)
+                        _ = Wiki().login("Fastily", "lol")
+                        showingLogin = true
+                    }) {
+                        Label("Login", systemImage: "person.crop.circle.badge.questionmark")
+                    }
+                    .sheet(isPresented: $showingLogin) {
+                        Login()
+                    }
+                case .standby:
+                    Button(action: {
+                        print("Upload")
+                    }) {
+                        Label("Upload", systemImage: "play.fill")
+                    }
+                case .inProgress:
+                    Button(action: {
+                        print("In Progress")
+                        showingPopover = true
+                    }) {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .scaleEffect(0.5)
+                            .popover(isPresented: $showingPopover) {
+                                VStack {
+                                    Text("Your content here")
+                                        .font(.headline)
+                                        .padding(.bottom)
+                                    ProgressView(value: 0.5)
+                                }
+                                .padding()
+                            }
+                        
+//                        ProgressView()
+//                            .progressViewStyle(CircularProgressViewStyle())
+//                            .scaleEffect(0.5)
+                        //                            .frame(width: 20, height: 20)
+                        //                        Label("Login", systemImage: "person.crop.circle.badge.questionmark")
+                    }
                 }
-                
-                
             }
             
             if modelData.ml.isEmpty {
                 Text("Click [+] to add media")
             }
             
-//            NavigationLink(destination: Text("Second View"), isActive: $isShowingEmptyView) { EmptyView() }
-            
-            //                .toolbar {
-            //
-            //                    Button(action: {
-            //                        print("Trash clicked 2")
-            //                    }) {
-            //                        Label("Remove", systemImage: "trash")
-            //                    }
-            //                }
             
         }
         .frame(minWidth: 1000, minHeight: 600)
