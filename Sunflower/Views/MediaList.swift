@@ -67,9 +67,6 @@ struct MediaList: View {
                 switch(modelData.mainButtonState){
                 case .notLoggedIn:
                     Button(action: {
-//                        print("Login")
-                        print(HTTPCookieStorage.shared.cookies!)
-                        _ = Wiki().login("Fastily", "lol")
                         showingLogin = true
                     }) {
                         Label("Login", systemImage: "person.crop.circle.badge.questionmark")

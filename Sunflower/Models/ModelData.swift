@@ -3,6 +3,7 @@ import Foundation
 import SwiftUI
 
 
+/// Represents a file description page for a file to be uploaded
 class Desc: ObservableObject {
     @Published var title = ""
     @Published var desc = ""
@@ -15,7 +16,7 @@ class Desc: ObservableObject {
 }
 
 
-/// Enum which represents the upload status of a file.  Supports the UploadStatus class.
+/// Enum which represents the upload status of a file.  Supports the `UploadStatus` class.
 enum Status {
     case standby, success, error
 }
@@ -26,7 +27,7 @@ class UploadStatus: Hashable, ObservableObject {
     /// The actual upload status
     @Published var status: Status
     
-//    @Published var isUploaded = false
+    //    @Published var isUploaded = false
     
     init(_ path: URL, _ status: Status = .standby) {
         self.path = path
@@ -47,7 +48,7 @@ class UploadStatus: Hashable, ObservableObject {
 
 class Media: Hashable {   
     var details = Desc()
-     
+
     var path: URL
     
     var name: String {
@@ -55,11 +56,11 @@ class Media: Hashable {
     }
     
     var thumb: Image {
-//        guard let img = NSImage(byReferencingFile: path.path) else {
-//            return Image("Example")
-//        }
-  
-//        return Image(nsImage: img)
+        //        guard let img = NSImage(byReferencingFile: path.path) else {
+        //            return Image("Example")
+        //        }
+
+        //        return Image(nsImage: img)
         
         guard let img = downsample(imageAt: path) else {
             return Image("Example")
@@ -109,20 +110,31 @@ class Media: Hashable {
     }
 }
 
+
+/// Represents the states for the main Upload action button
 enum MainButtonState {
     case notLoggedIn, standby, inProgress
 }
 
 
+
+/// The main storage object which maintains the state of Sunflower
 class ModelData: ObservableObject {
+
+    /// The interal representation of the global description object.  This is useful for mass uploads
     var globalDesc = Desc()
-    
+
+    /// The main shared Wiki object for Sunflower
+    let wiki = Wiki()
+
+    /// Represents the state of the main action button
     @Published var mainButtonState = MainButtonState.notLoggedIn
-    
+
+    /// Tracks the files the user has selected to be uploaded.  Maps a `URL` (pointing to the local file on the user's computer) to its associated `Media` object
     @Published var ml = [URL:Media]()
-    
+
     @Published var ulStatus = [UploadStatus]()
     
-//    // hike data never changes, so no need to mark it as @Published
-//    var hikes: [Hike] = load("hikeData.json")
+    //    // hike data never changes, so no need to mark it as @Published
+    //    var hikes: [Hike] = load("hikeData.json")
 }

@@ -1,14 +1,20 @@
-//
-
 import SwiftUI
 
+
+/// Represents the user login page.
 struct Login: View {
 
     @Environment(\.presentationMode) var presentationMode
 
+    @EnvironmentObject var modelData: ModelData
+
     @State private var username = ""
 
     @State private var password = ""
+
+    @State private var loginInProgress = false
+
+    @State private var loginJustFailed = false
 
     var body: some View {
         VStack {
@@ -24,7 +30,25 @@ struct Login: View {
 
             HStack {
                 Button("Submit") {
-                    dismissSheet()
+                    loginInProgress = true
+
+                    //                    print("Logging in with \(username) :::: \(password)")
+                    modelData.wiki.login(username, password) { success in
+                        if success {
+                            dismissSheet()
+                            modelData.mainButtonState = .standby
+                        }
+                        else {
+                            loginInProgress = false
+                            loginJustFailed = true
+                        }
+                    }
+                }
+                .disabled(loginInProgress)
+                .alert("Incorrect username/password, please try again.", isPresented: $loginJustFailed) {
+                    Button("OK", role: .cancel) {
+                        // nobody cares
+                    }
                 }
                 .keyboardShortcut(.defaultAction)
                 .padding(.trailing, 10)
@@ -32,6 +56,7 @@ struct Login: View {
                 Button("Cancel") {
                     dismissSheet()
                 }
+                .disabled(loginInProgress)
             }
 
         }
