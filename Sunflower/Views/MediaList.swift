@@ -43,6 +43,7 @@ struct MediaList: View {
                 Button(action: {
                     let panel = NSOpenPanel()
                     panel.allowsMultipleSelection = true
+                    panel.allowedContentTypes = modelData.wiki.valid_file_exts
                     
                     if panel.runModal() == .OK {
                         //                        modelData.fl.append(contentsOf: panel.urls.map { Media(path: $0) })
@@ -97,12 +98,6 @@ struct MediaList: View {
                                 }
                                 .padding()
                             }
-                        
-//                        ProgressView()
-//                            .progressViewStyle(CircularProgressViewStyle())
-//                            .scaleEffect(0.5)
-                        //                            .frame(width: 20, height: 20)
-                        //                        Label("Login", systemImage: "person.crop.circle.badge.questionmark")
                     }
                 }
             }
