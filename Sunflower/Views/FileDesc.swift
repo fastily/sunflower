@@ -41,18 +41,11 @@ struct FileDesc: View {
                     }) {
                         Label("View Image", systemImage: "eye")
                     }
-                    
-
                 }
-
-            
         }
         
     }
 }
-
-
-
 
 
 struct FileDesc_Previews: PreviewProvider {

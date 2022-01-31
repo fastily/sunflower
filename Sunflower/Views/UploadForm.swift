@@ -1,9 +1,13 @@
 import SwiftUI
 
+
+/// Represents an upload form.  Doesn't do much by itself, should embed this in another View.
 struct UploadForm: View {
-    
+
+    /// The `Desc` object backing the fields in this View
     @ObservedObject var d: Desc
-    
+
+    /// Flag inidicating if the title field should be shown.
     var showTitleField = true
     
     var body: some View {
@@ -17,16 +21,8 @@ struct UploadForm: View {
             
             Section(header: Text("Description")) {
                 TextEditor(text: $d.desc)
-                //                        .textFieldStyle(PlainTextFieldStyle())
                     .frame(minHeight: 50, alignment: .leading)
-                //                        .background(Color(NSColor.underPageBackgroundColor))
-                //                        .opacity(0.9)
-                
-                //                    static let background = Color(NSColor.windowBackgroundColor)
-                //                    static let secondaryBackground = Color(NSColor.underPageBackgroundColor)
-                //                    static let tertiaryBackground = Color(NSColor.controlBackgroundColor)
             }
-            
             
             Section(header: Text("Source")) {
                 TextField("", text:$d.source)

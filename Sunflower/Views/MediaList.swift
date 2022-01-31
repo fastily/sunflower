@@ -64,7 +64,6 @@ struct MediaList: View {
                 Spacer()
                 
                 // start upload
-                
                 switch(modelData.mainButtonState){
                 case .notLoggedIn:
                     Button(action: {
@@ -105,8 +104,6 @@ struct MediaList: View {
             if modelData.ml.isEmpty {
                 Text("Click [+] to add media")
             }
-            
-            
         }
         .frame(minWidth: 1000, minHeight: 600)
     }

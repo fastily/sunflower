@@ -6,14 +6,21 @@ struct Login: View {
 
     @Environment(\.presentationMode) var presentationMode
 
+    /// The shared model data object
     @EnvironmentObject var modelData: ModelData
 
+    /// The text entered by the user in the username field
     @State private var username = ""
 
+
+    /// The text entered by the user in the password field
     @State private var password = ""
 
+
+    /// Indicates whether a login API call is currently in progress.  Should disable the UI buttons while this is happening
     @State private var loginInProgress = false
 
+    /// Indicates if the user entered in bad credentials.  Should show the user a message informing them of what happened.
     @State private var loginJustFailed = false
 
     var body: some View {
@@ -32,7 +39,6 @@ struct Login: View {
                 Button("Submit") {
                     loginInProgress = true
 
-                    //                    print("Logging in with \(username) :::: \(password)")
                     modelData.wiki.login(username, password) { success in
                         if success {
                             dismissSheet()
@@ -75,6 +81,6 @@ struct Login: View {
 struct Login_Previews: PreviewProvider {
     static var previews: some View {
         Login()
-            .frame(minWidth:400, minHeight:200)
+            .previewLayout(.fixed(width: 400, height: 200))
     }
 }

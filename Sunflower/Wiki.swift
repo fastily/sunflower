@@ -14,7 +14,7 @@ class Wiki {
     private static let chunkSize = 1024 * 1024 * 4
 
     /// The base API endpoint to target
-    private let endpoint = "https://commons.wikimedia.org/w/api.php"
+    private static let endpoint = "https://commons.wikimedia.org/w/api.php"
 
     /// The username the user is currently logged in as
     var username = ""
@@ -79,11 +79,13 @@ class Wiki {
     private func uploadHelper(_ localName: String, _ f: FileHandle, _ chunkCount: Int, _ totalChunks: Int, _ pl: [String:String], _ title: String, _ desc: String, _ summary: String, _ completion: @escaping (Bool) -> ()) {
 
         guard let buffer = try? f.read(upToCount: Wiki.chunkSize) else {
+            try? f.close()
             completion(false)
             return
         }
 
         if buffer.isEmpty {
+            try? f.close()
             unstash(pl, title, desc, summary, completion)
             return
         }
@@ -96,7 +98,7 @@ class Wiki {
 
             // The file chunk
             multipartFormData.append(buffer, withName: "chunk", fileName: localName, mimeType: "multipart/form-data")
-        }, to: endpoint).responseData { r in
+        }, to: Wiki.endpoint).responseData { r in
 
             let jo = self.extractJO(r)["upload"]
 
@@ -162,7 +164,7 @@ class Wiki {
     ///   - method: The HTTP method to use to perform the request
     /// - Returns: A `DataRequest` with the results of this request
     private func basicRequest(_ action: String, _ params: [String:String] = [:], _ method: HTTPMethod = .get) -> DataRequest {
-        return AF.request(self.endpoint, method: method, parameters: makePL(action, params))
+        return AF.request(Wiki.endpoint, method: method, parameters: makePL(action, params))
     }
 
 

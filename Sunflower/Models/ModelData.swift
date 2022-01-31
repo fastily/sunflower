@@ -1,25 +1,6 @@
-import Combine
 import Foundation
 import SwiftUI
 
-
-/// Represents a file description page for a file to be uploaded
-class Desc: ObservableObject {
-    @Published var title = ""
-    @Published var desc = ""
-    @Published var source = ""
-    @Published var date = ""
-    @Published var author = "~~~~"
-    @Published var permission = ""
-    @Published var cat = ""
-    @Published var lic = ""
-}
-
-
-/// Enum which represents the upload status of a file.  Supports the `UploadStatus` class.
-enum Status {
-    case standby, success, error
-}
 
 class UploadStatus: Hashable, ObservableObject {
     var path: URL
@@ -47,13 +28,11 @@ class UploadStatus: Hashable, ObservableObject {
 
 
 class Media: Hashable {   
-    var details = Desc()
+    let details = Desc()
 
-    var path: URL
+    let path: URL
     
-    var name: String {
-        path.lastPathComponent
-    }
+    let name: String
     
     var thumb: Image {
         //        guard let img = NSImage(byReferencingFile: path.path) else {
@@ -71,6 +50,7 @@ class Media: Hashable {
     
     init(path: URL) {
         self.path = path
+        self.name = path.lastPathComponent
     }
     
     func hash(into hasher: inout Hasher) {
@@ -134,7 +114,17 @@ class ModelData: ObservableObject {
     @Published var ml = [URL:Media]()
 
     @Published var ulStatus = [UploadStatus]()
-    
+
+
+    func addFile() {
+
+    }
+
+    func removeFile() {
+
+    }
+
+
     //    // hike data never changes, so no need to mark it as @Published
     //    var hikes: [Hike] = load("hikeData.json")
 }
