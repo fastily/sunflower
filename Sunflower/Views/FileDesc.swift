@@ -8,26 +8,21 @@ struct FileDesc: View {
     
     @State private var wasDeleted = false
     
-    var f: Media
+    var f: UploadCandinate
     
     var body: some View {
         
         if !wasDeleted {
             UploadForm(d: f.details)
-                .navigationTitle("Details for \(f.name)")
+                .navigationTitle("Details for \(f.path.lastPathComponent)")
                 .padding(30)
                 .sheet(isPresented: $showFileSheet) {
                     FileViewer(f: f)
                 }
                 .toolbar {
                     Button(action: {
-                        
-                        modelData.ulStatus.removeAll {
-                            $0.path == f.path
-                        }
-                        
-                        modelData.ml.removeValue(forKey: f.path)
-                        
+                        modelData.removeFile(f.path)
+
                         print("Trash clicked 3")
                         wasDeleted = true
                         //                    self.presentation.wrappedValue.dismiss()
@@ -50,7 +45,7 @@ struct FileDesc: View {
 
 struct FileDesc_Previews: PreviewProvider {
     static var previews: some View {
-        FileDesc(f: Media(path: URL(string: "file:///Example.jpg")!))
+        FileDesc(f: UploadCandinate(URL(string: "file:///Example.jpg")!))
             .frame(minWidth: 900, minHeight: 500)
     }
 }

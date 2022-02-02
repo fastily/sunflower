@@ -12,10 +12,8 @@ struct Login: View {
     /// The text entered by the user in the username field
     @State private var username = ""
 
-
     /// The text entered by the user in the password field
     @State private var password = ""
-
 
     /// Indicates whether a login API call is currently in progress.  Should disable the UI buttons while this is happening
     @State private var loginInProgress = false

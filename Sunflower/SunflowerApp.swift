@@ -1,7 +1,8 @@
 import SwiftUI
 
-@main
-struct SunflowerApp: App {
+
+/// Main driver, entry point
+@main struct SunflowerApp: App {
     
     @StateObject private var modelData = ModelData()
     

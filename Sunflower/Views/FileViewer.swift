@@ -1,20 +1,16 @@
-//
-
 import SwiftUI
 
 struct FileViewer: View {
     
     @Environment(\.presentationMode) var presentationMode
     
-    var f: Media
+    var f: UploadCandinate
     
     var body: some View {
         VStack {
-            if let img = NSImage(byReferencingFile: f.path.path) {
-                
+            if let img = NSImage(byReferencing: f.path) {
                 Image(nsImage: img)
                     .resizable()
-                    
                     .aspectRatio( contentMode: .fit)
                     .frame(maxWidth: 800, maxHeight: 800)
                     .padding(.bottom)
@@ -30,14 +26,13 @@ struct FileViewer: View {
             }.keyboardShortcut(.defaultAction)
         }
         
-        
         .padding()
     }
 }
 
 struct FileViewer_Previews: PreviewProvider {
     static var previews: some View {
-        FileViewer(f: Media(path: URL(string: "file:///Example.jpg")!))
+        FileViewer(f: UploadCandinate(URL(string: "file:///Example.jpg")!))
     }
 }
 
