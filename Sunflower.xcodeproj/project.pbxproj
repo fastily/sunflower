@@ -10,7 +10,7 @@
 		7010C8B2272E38C900A6EE1F /* SunflowerCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7010C8B1272E38C900A6EE1F /* SunflowerCommands.swift */; };
 		701415F827A6453500B5681A /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 701415F727A6453500B5681A /* UploadManager.swift */; };
 		701CDD1D27A13224009CF593 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 701CDD1C27A13224009CF593 /* SwiftyJSON */; };
-		7039F50B27491845005D8F23 /* BottomSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7039F50A27491845005D8F23 /* BottomSidebarView.swift */; };
+		704D91D127AABC0A00C8C0DB /* UploadInProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704D91D027AABC0A00C8C0DB /* UploadInProgressView.swift */; };
 		705261B2274A1C5F00030730 /* FileViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705261B1274A1C5F00030730 /* FileViewer.swift */; };
 		70663CC1272C09A8008759BE /* GlobalDesc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70663CC0272C09A8008759BE /* GlobalDesc.swift */; };
 		7072509A2728190E00D79682 /* SunflowerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707250992728190E00D79682 /* SunflowerApp.swift */; };
@@ -32,7 +32,7 @@
 /* Begin PBXFileReference section */
 		7010C8B1272E38C900A6EE1F /* SunflowerCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunflowerCommands.swift; sourceTree = "<group>"; };
 		701415F727A6453500B5681A /* UploadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadManager.swift; sourceTree = "<group>"; };
-		7039F50A27491845005D8F23 /* BottomSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSidebarView.swift; sourceTree = "<group>"; };
+		704D91D027AABC0A00C8C0DB /* UploadInProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadInProgressView.swift; sourceTree = "<group>"; };
 		705261B1274A1C5F00030730 /* FileViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileViewer.swift; sourceTree = "<group>"; };
 		70663CC0272C09A8008759BE /* GlobalDesc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalDesc.swift; sourceTree = "<group>"; };
 		707250962728190E00D79682 /* Sunflower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sunflower.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,7 +78,6 @@
 		7066876A27282AE5002E900D /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				7039F50A27491845005D8F23 /* BottomSidebarView.swift */,
 				7072509B2728190E00D79682 /* ContentView.swift */,
 				70D53A9A272EC2B6009F165A /* FileDesc.swift */,
 				705261B1274A1C5F00030730 /* FileViewer.swift */,
@@ -87,6 +86,7 @@
 				707250AE2728289C00D79682 /* MediaList.swift */,
 				707250A827281E5D00D79682 /* MediaRow.swift */,
 				70D53A98272EC046009F165A /* UploadForm.swift */,
+				704D91D027AABC0A00C8C0DB /* UploadInProgressView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -210,11 +210,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				7072509C2728190E00D79682 /* ContentView.swift in Sources */,
+				704D91D127AABC0A00C8C0DB /* UploadInProgressView.swift in Sources */,
 				70CBBFE227A7DE9000ABFB11 /* UploadCandinate.swift in Sources */,
 				7010C8B2272E38C900A6EE1F /* SunflowerCommands.swift in Sources */,
 				70D14BC927A16F0500F4B26D /* Login.swift in Sources */,
 				7079762D27A8125400BC59E5 /* Desc.swift in Sources */,
-				7039F50B27491845005D8F23 /* BottomSidebarView.swift in Sources */,
 				701415F827A6453500B5681A /* UploadManager.swift in Sources */,
 				7072509A2728190E00D79682 /* SunflowerApp.swift in Sources */,
 				707250AF2728289C00D79682 /* MediaList.swift in Sources */,

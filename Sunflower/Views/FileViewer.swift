@@ -1,38 +1,36 @@
 import SwiftUI
 
+/// Represents a simple image preview window
 struct FileViewer: View {
-    
+
+    /// The presentation mode environment variable, can be used to dismiss this `View` when embedded in a sheet
     @Environment(\.presentationMode) var presentationMode
-    
-    var f: UploadCandinate
-    
+
+    /// The `UploadCandinate` associated with this `View`
+    var uploadCandinate: UploadCandinate
+
+    /// The main body of the View
     var body: some View {
         VStack {
-            if let img = NSImage(byReferencing: f.path) {
-                Image(nsImage: img)
-                    .resizable()
-                    .aspectRatio( contentMode: .fit)
-                    .frame(maxWidth: 800, maxHeight: 800)
-                    .padding(.bottom)
-                
-            } else {
-                Image("Example")
-            }
-            
+            UploadManager.downsampleImage(uploadCandinate.path, to: CGSize(width: 750, height: 750))
+                .resizable()
+                .aspectRatio( contentMode: .fit)
+                .padding(.bottom)
+
             Button("Done") {
                 presentationMode.wrappedValue.dismiss()
                 NSApp.mainWindow?.endSheet(NSApp.keyWindow!) // workaround SwiftUI to show dismiss animation
                 
             }.keyboardShortcut(.defaultAction)
         }
-        
         .padding()
+        .frame(maxWidth: 800, maxHeight: 800)
     }
 }
 
 struct FileViewer_Previews: PreviewProvider {
     static var previews: some View {
-        FileViewer(f: UploadCandinate(URL(string: "file:///Example.jpg")!))
+        FileViewer(uploadCandinate: UploadCandinate(URL(string: "file:///Example.jpg")!))
     }
 }
 

@@ -9,46 +9,54 @@ struct UploadForm: View {
 
     /// Flag inidicating if the title field should be shown.
     var showTitleField = true
-    
+
+    /// The main body of the View
     var body: some View {
         
         Form {
             if showTitleField {
-                Section(header: Text("Title")) {
+                Section(header: makeSectionHeader("Title")) {
                     TextField("", text:$d.title)
                 }
             }
             
-            Section(header: Text("Description")) {
-                TextEditor(text: $d.desc)
+            Section(header: makeSectionHeader("Description")) {
+                TextEditor(text: $d.description)
                     .frame(minHeight: 50, alignment: .leading)
             }
             
-            Section(header: Text("Source")) {
+            Section(header: makeSectionHeader("Source")) {
                 TextField("", text:$d.source)
             }
             
-            Section(header: Text("Date")) {
+            Section(header: makeSectionHeader("Date")) {
                 TextField("", text:$d.date)
             }
             
-            Section(header: Text("Author")) {
+            Section(header: makeSectionHeader("Author")) {
                 TextField("", text:$d.author)
             }
             
-            Section(header: Text("Permission")) {
+            Section(header: makeSectionHeader("Permission")) {
                 TextField("", text:$d.permission)
             }
             
-            Section(header: Text("Licensing")) {
+            Section(header: makeSectionHeader("Licensing")) {
                 TextField("", text:$d.lic)
             }
             
-            Section(header: Text("Categories")) {
+            Section(header: makeSectionHeader("Categories")) {
                 TextField("", text:$d.cat)
             }
         }
         
+    }
+
+    /// Convenience function, creates a section header with the specified `String`.
+    /// - Parameter s: The `String` to use for the section header
+    /// - Returns: The section header
+    private func makeSectionHeader(_ s: String) -> Text {
+        Text(s).font(.headline)
     }
 }
 

@@ -4,6 +4,7 @@ import SwiftUI
 /// Represents the user login page.
 struct Login: View {
 
+    /// The presentation mode environment variable, can be used to dismiss this `View` when embedded in a sheet
     @Environment(\.presentationMode) var presentationMode
 
     /// The shared model data object
@@ -37,8 +38,8 @@ struct Login: View {
                 Button("Submit") {
                     loginInProgress = true
 
-                    modelData.wiki.login(username, password) { success in
-                        if success {
+                    Task {
+                        if await modelData.wiki.login(username, password) {
                             dismissSheet()
                             modelData.mainButtonState = .standby
                         }
@@ -69,7 +70,8 @@ struct Login: View {
 
     }
 
-    func dismissSheet() {
+    /// Convenience function, dismiss this view
+    private func dismissSheet() {
         presentationMode.wrappedValue.dismiss()
         NSApp.mainWindow?.endSheet(NSApp.keyWindow!) // workaround SwiftUI to show dismiss animation
     }

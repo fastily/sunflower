@@ -31,7 +31,9 @@ class Wiki {
 
     /// Initializer, creates a new Wiki object
     init() {
-        uploadableFileTypes()
+        Task {
+            await uploadableFileTypes()
+        }
     }
 
 
@@ -41,27 +43,25 @@ class Wiki {
     /// - Parameters:
     ///   - username: The username to use
     ///   - password: The password to use
-    ///   - completion: The callback to run post-login.  Will be passed the result of the login.  If `true`, then the login was successful.
-    func login(_ username: String, _ password: String, completion: @escaping (Bool) -> ()) {
-        fetchToken(getCSRF: false) { loginToken in
+    func login(_ username: String, _ password: String) async -> Bool {
 
-            self.basicRequest("login", ["lgname": username, "lgpassword": password, "lgtoken": loginToken], .post).responseData { loginResponse in
-                let jo = self.extractJO(loginResponse)["login"]
+        let loginToken = await fetchToken(getCSRF: false)
 
-                if jo["result"].string != "Success" {
-                    completion(false)
-                    return
-                }
+        if let v = try? await basicRequest("login", ["lgname": username, "lgpassword": password, "lgtoken": loginToken], .post).serializingData().value, let jo = try? JSON(data: v) {
 
-                self.username = jo["lgusername"].string!
+            let result = jo["login"]
 
-                self.fetchToken(getCSRF: true) { csrfToken in
-                    self.csrfToken = csrfToken
-                }
+            if result["result"].string == "Success" {
+                self.username = result["lgusername"].string!
+                csrfToken = await fetchToken()
 
-                completion(true)
+                print(csrfToken)
+
+                return true
             }
         }
+
+        return false
     }
 
 
@@ -132,24 +132,24 @@ class Wiki {
     /// Fetches a login or csrf token from the API
     /// - Parameters:
     ///   - getCSRF: set `true` to fetch a csrf token, or `false` to get a login token.
-    ///   - completion: The callback function to run.  Will be passed the token that was retrieved from the API as a `String`.
-    func fetchToken(getCSRF: Bool, completion: @escaping (String) -> ()) {
+    func fetchToken(getCSRF: Bool = true) async -> String {
         var pl = ["meta": "tokens"]
         if !getCSRF {
             pl["type"] = "login"
         }
-        let prefix = pl["type", default: "csrf"]
 
-        basicRequest("query", pl).responseData {
-            completion(self.extractJO($0)["query", "tokens", prefix + "token"].string ?? "+\\")
+        if let v = try? await basicRequest("query", pl).serializingData().value, let jo = try? JSON(data: v), let token = jo["query", "tokens", "\(pl["type", default: "csrf"])token"].string {
+            return token
         }
+
+        return "+\\"
     }
 
 
     ///  Fetches the list of file types that can be uploaded to Commons.  Called automatically by the initializer when this object is created.  See `valid_file_exts`.
-    private func uploadableFileTypes() {
-        basicRequest("query", ["meta": "siteinfo", "siprop": "fileextensions"]).responseData { r in
-            self.valid_file_exts = Array(Set(self.extractJO(r)["query", "fileextensions"].arrayValue.map { UTType(filenameExtension: $0["ext"].string!)! }))
+    private func uploadableFileTypes() async {
+        if let v = try? await basicRequest("query", ["meta": "siteinfo", "siprop": "fileextensions"]).serializingData().value, let jo = try? JSON(data: v) {
+            self.valid_file_exts = Array(Set(jo["query", "fileextensions"].arrayValue.map { UTType(filenameExtension: $0["ext"].string!)! }))
         }
     }
 

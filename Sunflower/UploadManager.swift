@@ -1,9 +1,11 @@
 import Foundation
 import SwiftUI
 
+
+/// Miscellaneous convenience methods for managing and uploading images
 class UploadManager {
 
-    /// Downsamples a raster image so it doesn't take up copious amounts of memory when displayed.  Inspired by https://medium.com/@zippicoder/downsampling-images-for-better-memory-consumption-and-uicollectionview-performance-35e0b4526425
+    /// Downsamples a raster image so it doesn't take up copious amounts of memory when displayed.  Inspired by [this writeup](https://medium.com/@zippicoder/downsampling-images-for-better-memory-consumption-and-uicollectionview-performance-35e0b4526425).
     /// - Parameters:
     ///   - imageURL: The path to the image to downsample
     ///   - pointSize: The max height/width in pixels

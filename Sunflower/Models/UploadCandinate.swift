@@ -2,24 +2,17 @@ import Foundation
 
 class UploadCandinate: ObservableObject {
 
+    @Published var uploadStatus = Status.standby
+
     let details = Desc()
 
     let path: URL
 
-    @Published var uploadStatus = Status.standby
-
+    /// Initializer, creates a new UploadCandinate with the specified path `URL`
+    /// - Parameter path: The path to the file to upload
     init(_ path: URL ) {
         self.path = path
     }
-
-//    var thumb: Image {
-//        guard let img = downsample(imageAt: path) else {
-//            return Image("Example")
-//        }
-//
-//        return img
-//    }
-
 }
 
 /// Enum which represents the upload status of a file.  Supports the `UploadStatus` class.
