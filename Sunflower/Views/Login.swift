@@ -41,7 +41,7 @@ struct Login: View {
                     Task {
                         if await modelData.wiki.login(username, password) {
                             dismissSheet()
-                            modelData.mainButtonState = .standby
+                            modelData.isLoggedIn = true
                         }
                         else {
                             loginInProgress = false

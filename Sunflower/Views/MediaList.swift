@@ -8,10 +8,6 @@ struct MediaList: View {
 
     /// The currently selected file (via the sidebar) to show the file description editing interface
     @State private var selectedMedia: URL?
-    
-//    @State private var isShowingEmptyView = false
-    
-//    @State private var showingPopover = false
 
     @State private var showingLogin = false
 
@@ -25,11 +21,11 @@ struct MediaList: View {
                 List(selection: $selectedMedia) {
 
                     Section(header: Text("Files to Upload")) {
-                        ForEach(modelData.paths, id: \.self) { uploadStatus in
-                            NavigationLink(destination: FileDesc(uploadCandinate: modelData.uploadCandinates[uploadStatus]!)) {
-                                MediaRow(uploadCandinate: modelData.uploadCandinates[uploadStatus]!)
+                        ForEach(modelData.paths, id: \.self) { path in
+                            NavigationLink(destination: FileDesc(uploadCandinate: modelData.uploadCandinates[path]!)) {
+                                MediaRow(uploadCandinate: modelData.uploadCandinates[path]!)
                             }
-                            .tag(uploadStatus)
+                            .tag(path)
                         }
                     }
                     .collapsible(false)
@@ -72,20 +68,8 @@ struct MediaList: View {
 
                 Spacer()
 
-                // start upload
-                switch(modelData.mainButtonState){
-                case .notLoggedIn:
-                    Button(action: {
-                        showingLogin = true
-                    }) {
-                        Label("Login", systemImage: "person.crop.circle.badge.questionmark")
-                    }
-                    .sheet(isPresented: $showingLogin) {
-                        Login()
-                    }
-                    .help("Login to your Wikimedia account")
-
-                case .standby:
+                if modelData.isLoggedIn {
+                    // button - start upload
                     Button(action: {
                         showingUploadInProgress = true
                     }) {
@@ -95,25 +79,18 @@ struct MediaList: View {
                         UploadInProgressView()
                     }
                     .help("Peform upload")
-
-//                case .inProgress:
-//                    Button(action: {
-//                        print("In Progress")
-//                        showingPopover = true
-//                    }) {
-//                        ProgressView()
-//                            .progressViewStyle(CircularProgressViewStyle())
-//                            .scaleEffect(0.5)
-//                            .popover(isPresented: $showingPopover) {
-//                                VStack {
-//                                    Text("Your content here")
-//                                        .font(.headline)
-//                                        .padding(.bottom)
-//                                    ProgressView(value: 0.5)
-//                                }
-//                                .padding()
-//                            }
-//                    }
+                }
+                else {
+                    // button - login
+                    Button(action: {
+                        showingLogin = true
+                    }) {
+                        Label("Login", systemImage: "person.crop.circle.badge.questionmark")
+                    }
+                    .sheet(isPresented: $showingLogin) {
+                        Login()
+                    }
+                    .help("Login to your Wikimedia account")
                 }
             }
 

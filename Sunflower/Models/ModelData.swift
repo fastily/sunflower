@@ -1,11 +1,5 @@
 import Foundation
 
-/// Represents the states for the main Upload action button
-enum MainButtonState {
-    case notLoggedIn, standby //, inProgress
-}
-
-
 /// The main storage object which maintains the state of Sunflower
 class ModelData: ObservableObject {
     
@@ -15,8 +9,8 @@ class ModelData: ObservableObject {
     /// The main shared Wiki object for Sunflower
     let wiki = Wiki()
     
-    /// Represents the state of the main action button
-    @Published var mainButtonState = MainButtonState.notLoggedIn
+    /// Indicates if the user is logged in or not
+    @Published var isLoggedIn = false
     
     /// Tracks the files the user has selected to be uploaded.  Maps a `URL` (pointing to the local file on the user's computer) to an associated `UploadCandinate` object
     @Published var uploadCandinates = [URL:UploadCandinate]()
