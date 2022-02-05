@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Represents the a file for upload in the List sidebar.  Can show the status of whether the file has been uploaded or not.
-struct MediaRow: View {
+struct MediaRowView: View {
 
     @ObservedObject var uploadCandinate: UploadCandinate
 
@@ -38,15 +38,15 @@ struct MediaRow: View {
     
 }
 
-struct MediaRow_Previews: PreviewProvider {
+struct MediaRowView_Previews: PreviewProvider {
     
     private static var p = URL(string: "file:///Example.jpg")!
     
     static var previews: some View {
         Group {
-            MediaRow(uploadCandinate: makeUploadCandinate())
-            MediaRow(uploadCandinate: makeUploadCandinate(.success))
-            MediaRow(uploadCandinate: makeUploadCandinate(.error))
+            MediaRowView(uploadCandinate: makeUploadCandinate())
+            MediaRowView(uploadCandinate: makeUploadCandinate(.success))
+            MediaRowView(uploadCandinate: makeUploadCandinate(.error))
         }
         .previewLayout(.fixed(width: 300, height: 70))
         

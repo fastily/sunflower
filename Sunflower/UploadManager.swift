@@ -41,6 +41,8 @@ class UploadManager {
 
     static func performUploads(_ modelData: ModelData, _ i: Int = 0, completion: @escaping () -> () ) {
 
+        
+
 
 
     }

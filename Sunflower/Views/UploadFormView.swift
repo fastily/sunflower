@@ -2,7 +2,7 @@ import SwiftUI
 
 
 /// Represents an upload form.  Doesn't do much by itself, should embed this in another View.
-struct UploadForm: View {
+struct UploadFormView: View {
 
     /// The `Desc` object backing the fields in this View
     @ObservedObject var d: Desc
@@ -21,7 +21,7 @@ struct UploadForm: View {
             }
             
             Section(header: makeSectionHeader("Description")) {
-                TextEditor(text: $d.description)
+                TextEditor(text: $d.desc)
                     .frame(minHeight: 50, alignment: .leading)
             }
             
@@ -60,9 +60,9 @@ struct UploadForm: View {
     }
 }
 
-struct UploadForm_Previews: PreviewProvider {
+struct UploadFormView_Previews: PreviewProvider {
     static var previews: some View {
-        UploadForm(d: Desc())
+        UploadFormView(d: Desc())
             .frame(minWidth: 900, minHeight: 500)
         
     }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct FileDesc: View {
+struct FileDescView: View {
     //@Environment(\.presentationMode) var presentation
     
     @EnvironmentObject var modelData: ModelData
@@ -14,11 +14,11 @@ struct FileDesc: View {
     var body: some View {
         
         if !wasDeleted {
-            UploadForm(d: uploadCandinate.details)
+            UploadFormView(d: uploadCandinate.details)
                 .navigationTitle("Details for \(uploadCandinate.path.lastPathComponent)")
                 .padding(30)
                 .sheet(isPresented: $showFileSheet) {
-                    FileViewer(uploadCandinate: uploadCandinate)
+                    FileViewerView(uploadCandinate: uploadCandinate)
                 }
                 .toolbar {
 
@@ -50,9 +50,9 @@ struct FileDesc: View {
 }
 
 
-struct FileDesc_Previews: PreviewProvider {
+struct FileDescView_Previews: PreviewProvider {
     static var previews: some View {
-        FileDesc(uploadCandinate: UploadCandinate(URL(string: "file:///Example.jpg")!))
+        FileDescView(uploadCandinate: UploadCandinate(URL(string: "file:///Example.jpg")!))
             .frame(minWidth: 900, minHeight: 500)
     }
 }

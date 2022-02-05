@@ -7,7 +7,7 @@ class Desc: ObservableObject {
     @Published var title = ""
     
     /// The text to put in the `description` parameter of the `Information` template on the file description page.
-    @Published var description = ""
+    @Published var desc = ""
     
     /// The text to put in the `source` parameter of the `Information` template on the file description page.
     @Published var source = ""
@@ -26,4 +26,22 @@ class Desc: ObservableObject {
     
     /// The text to use in the license section of the file decription page
     @Published var lic = ""
+    
+    /// The generated file description page, based on the properties in this `Desc`
+    var description: String {
+        return """
+=={{int:filedesc}}==
+{{Information
+|description=\(desc)
+|date=\(date)
+|source=\(source)
+|author=\(author)
+}}
+
+=={{int:license-header}}==
+\(lic)
+
+\(cat)
+"""
+    }
 }

@@ -4,6 +4,9 @@ import SwiftUI
 /// The view that gets shown in a sheet when the user starts an upload
 struct UploadInProgressView: View {
 
+    /// The globally shared model data between views
+    @EnvironmentObject var modelData: ModelData
+
     /// The presentation mode environment variable, can be used to dismiss this `View` when embedded in a sheet
     @Environment(\.presentationMode) var presentationMode
     
@@ -13,11 +16,11 @@ struct UploadInProgressView: View {
                 .font(.title)
                 .padding(.bottom)
 
-            ProgressView(value: 0.5)
-            Text("Uploading example.jpg")
+            ProgressView(value: modelData.uploadState.currFileProgress)
+            Text(modelData.uploadState.currentFileName)
                 .padding(.bottom)
 
-            ProgressView(value:0.6)
+            ProgressView(value:modelData.uploadState.totalProgress)
             Text("Overall Progress")
                 .padding(.bottom, 25)
 

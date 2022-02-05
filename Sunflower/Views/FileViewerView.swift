@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Represents a simple image preview window
-struct FileViewer: View {
+struct FileViewerView: View {
 
     /// The presentation mode environment variable, can be used to dismiss this `View` when embedded in a sheet
     @Environment(\.presentationMode) var presentationMode
@@ -28,9 +28,9 @@ struct FileViewer: View {
     }
 }
 
-struct FileViewer_Previews: PreviewProvider {
+struct FileViewerView_Previews: PreviewProvider {
     static var previews: some View {
-        FileViewer(uploadCandinate: UploadCandinate(URL(string: "file:///Example.jpg")!))
+        FileViewerView(uploadCandinate: UploadCandinate(URL(string: "file:///Example.jpg")!))
     }
 }
 

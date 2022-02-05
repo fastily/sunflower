@@ -72,6 +72,8 @@ class Wiki {
             return false
         }
 
+        log.info("Uploading '\(path)' to '\(title)'")
+
         let totalChunks = fsize / Wiki.chunkSize + 1
         var pl = ["filename": title, "offset": "0", "ignorewarnings": "1", "filesize": String(fsize), "token": csrfToken, "stash": "1"]
         var chunkCount = 0
@@ -128,82 +130,7 @@ class Wiki {
         }
 
         return false
-
-
-
-
-//        uploadHelper(path.lastPathComponent, f, 0, , makePL("upload", ), title, desc, summary)
-
-
-
-
-        //let size = try? FileManager.default.attributesOfItem(atPath: path.path)[.size] as? Int
-//        if let f = try? FileHandle(forReadingFrom: path), let size = try? path.resourceValues(forKeys:[.fileSizeKey]).fileSize {
-//            uploadHelper(path.lastPathComponent, f, 0, size / Wiki.chunkSize + 1, makePL("upload", ["filename": title, "offset": "0", "ignorewarnings": "1", "filesize": String(size), "token": csrfToken, "stash": "1"]), title, desc, summary, completion)
-//        }
-//        else {
-//            completion(false)
-//        }
     }
-
-//    private func uploadHelper(_ localName: String, _ f: FileHandle, _ chunkCount: Int, _ totalChunks: Int, _ pl: [String:String], _ title: String, _ desc: String, _ summary: String, _ completion: @escaping (Bool) -> ()) {
-//
-//        guard let buffer = try? f.read(upToCount: Wiki.chunkSize) else {
-//            try? f.close()
-//            completion(false)
-//            return
-//        }
-//
-//        if buffer.isEmpty {
-//            try? f.close()
-//            unstash(pl, title, desc, summary, completion)
-//            return
-//        }
-//
-//        AF.upload(multipartFormData: { multipartFormData in
-//            // Standard parameters
-//            for (k, v) in pl {
-//                multipartFormData.append(Data(v.utf8), withName: k)
-//            }
-//
-//            // The file chunk
-//            multipartFormData.append(buffer, withName: "chunk", fileName: localName, mimeType: "multipart/form-data")
-//        }, to: Wiki.endpoint).responseData { r in
-//
-//            let jo = self.extractJO(r)["upload"]
-//
-//            // check for chunk errors
-//            if !["Success", "Continue"].contains(jo["result"].string) {
-//                completion(false)
-//                return // TODO: Echo out the error
-//            }
-//
-//            let newChunkCount = chunkCount + 1
-//            var newPL = pl
-//            newPL["filekey"] = jo["filekey"].string
-//            newPL["offest"] = String(Wiki.chunkSize * chunkCount)
-//
-//            self.uploadHelper(localName, f, newChunkCount, totalChunks, newPL, title, desc, summary, completion)
-//        }
-//    }
-
-
-    private func unstash(_ filekey: String, _ title: String, _ desc: String, _ summary: String) async -> Bool {
-
-        if let jo = await basicRequest("upload", ["filename": title, "text": desc, "comment": summary, "filekey": filekey, "ignorewarnings": "1"], .post), let result = jo["upload", "result"].string {
-            return result == "Success"
-//            completion(self.extractJO(r)["upload", "result"].string == "Success")
-        }
-
-        return false
-
-//        basicRequest("upload", ["filename": title, "text": desc, "comment": summary, "filekey": pl["filekey"]!, "ignorewarnings": "1"]).responseData { r in
-//            completion(self.extractJO(r)["upload", "result"].string == "Success")
-//        }
-    }
-
-
-
 
     // MARK: - QUERIES
 
@@ -215,14 +142,13 @@ class Wiki {
         if !getCSRF {
             pl["type"] = "login"
         }
+        let prefix = pl["type", default: "csrf"]
 
-        if let jo = await basicRequest("query", pl), let token = jo["query", "tokens", "\(pl["type", default: "csrf"])token"].string {
+        log.debug("Fetching \(prefix) token...")
+
+        if let jo = await basicRequest("query", pl), let token = jo["query", "tokens", prefix + "token"].string {
             return token
         }
-
-//        if let v = try? await basicRequest("query", pl).serializingData().value, let jo = try? JSON(data: v), let token = jo["query", "tokens", "\(pl["type", default: "csrf"])token"].string {
-//            return token
-//        }
 
         return "+\\"
     }
@@ -230,13 +156,11 @@ class Wiki {
 
     ///  Fetches the list of file types that can be uploaded to Commons.  Called automatically by the initializer when this object is created.  See `valid_file_exts`.
     private func uploadableFileTypes() async {
+        log.info("Fetching a list of acceptable file upload extensions.")
+
         if let jo = await basicRequest("query", ["meta": "siteinfo", "siprop": "fileextensions"]) {
             self.valid_file_exts = Array(Set(jo["query", "fileextensions"].arrayValue.map { UTType(filenameExtension: $0["ext"].string!)! }))
         }
-
-//        if let v = try? await basicRequest("query", ["meta": "siteinfo", "siprop": "fileextensions"]).serializingData().value, let jo = try? JSON(data: v) {
-//            self.valid_file_exts = Array(Set(jo["query", "fileextensions"].arrayValue.map { UTType(filenameExtension: $0["ext"].string!)! }))
-//        }
     }
 
     func validateCredentials() async -> Bool {
@@ -250,9 +174,6 @@ class Wiki {
 
         return false
     }
-
-
-
 
 
     // MARK: - CONVENIENCE FUNCTIONS

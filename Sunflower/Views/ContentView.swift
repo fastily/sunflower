@@ -7,7 +7,7 @@ struct ContentView: View {
     @EnvironmentObject var modelData: ModelData
 
     var body: some View {
-        MediaList()
+        MediaListView()
             .onAppear {
                 Task {
                     modelData.isLoggedIn = await modelData.wiki.validateCredentials()

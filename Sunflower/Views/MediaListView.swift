@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// The main UI window that gets shown to the user
-struct MediaList: View {
+struct MediaListView: View {
 
     /// The globally shared model data between views
     @EnvironmentObject var modelData: ModelData
@@ -22,8 +22,8 @@ struct MediaList: View {
 
                     Section(header: Text("Files to Upload")) {
                         ForEach(modelData.paths, id: \.self) { path in
-                            NavigationLink(destination: FileDesc(uploadCandinate: modelData.uploadCandinates[path]!)) {
-                                MediaRow(uploadCandinate: modelData.uploadCandinates[path]!)
+                            NavigationLink(destination: FileDescView(uploadCandinate: modelData.uploadCandinates[path]!)) {
+                                MediaRowView(uploadCandinate: modelData.uploadCandinates[path]!)
                             }
                             .tag(path)
                         }
@@ -63,7 +63,7 @@ struct MediaList: View {
                 }
                 .help("Edit global upload config")
                 .sheet(isPresented: $showingGlobalDesc) {
-                    GlobalDesc()
+                    GlobalDescView()
                 }
 
                 Spacer()
@@ -88,7 +88,7 @@ struct MediaList: View {
                         Label("Login", systemImage: "person.crop.circle.badge.questionmark")
                     }
                     .sheet(isPresented: $showingLogin) {
-                        Login()
+                        LoginView()
                     }
                     .help("Login to your Wikimedia account")
                 }
@@ -102,7 +102,7 @@ struct MediaList: View {
     }
 }
 
-struct MediaList_Previews: PreviewProvider {
+struct MediaListView_Previews: PreviewProvider {
     
     private static var envObj: ModelData {
         let md = ModelData()
@@ -117,10 +117,10 @@ struct MediaList_Previews: PreviewProvider {
     
     static var previews: some View {
         Group {
-            MediaList()
+            MediaListView()
                 .environmentObject(envObj)
             
-            MediaList()
+            MediaListView()
                 .environmentObject(ModelData())
         }
     }

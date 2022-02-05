@@ -1,7 +1,7 @@
 import AppKit
 import SwiftUI
 
-struct GlobalDesc: View {
+struct GlobalDescView: View {
     
     @Environment(\.presentationMode) var presentationMode
     
@@ -10,7 +10,7 @@ struct GlobalDesc: View {
     var body: some View {
         
         ScrollView {
-            UploadForm(d: modelData.globalDesc, showTitleField: false)
+            UploadFormView(d: modelData.globalDesc, showTitleField: false)
                 .padding()
             
             Button("Done") {
@@ -26,9 +26,9 @@ struct GlobalDesc: View {
     }
 }
 
-struct GlobalDesc_Previews: PreviewProvider {
+struct GlobalDescView_Previews: PreviewProvider {
     static var previews: some View {
-        GlobalDesc()
+        GlobalDescView()
             .environmentObject(ModelData())
             .frame(minWidth: 900, minHeight: 500)
     }

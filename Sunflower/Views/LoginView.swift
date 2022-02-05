@@ -2,7 +2,7 @@ import SwiftUI
 
 
 /// Represents the user login page.
-struct Login: View {
+struct LoginView: View {
 
     /// The presentation mode environment variable, can be used to dismiss this `View` when embedded in a sheet
     @Environment(\.presentationMode) var presentationMode
@@ -78,9 +78,9 @@ struct Login: View {
 }
 
 
-struct Login_Previews: PreviewProvider {
+struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        Login()
+        LoginView()
             .previewLayout(.fixed(width: 400, height: 200))
     }
 }

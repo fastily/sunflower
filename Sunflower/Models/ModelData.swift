@@ -17,7 +17,9 @@ class ModelData: ObservableObject {
     
     /// The paths (as `URL`s) to the files to upload.  This exists as an optimization so the entire `MediaList` view doesn't have to be redrawn every time an update occurs.
     @Published var paths = [URL]()
-    
+
+    @Published var uploadState = UploadState()
+
     /// Adds a file to the list of files to upload
     /// - Parameter path: The path `URL` to the file to upload
     func addFile(_ path: URL) {
