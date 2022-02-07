@@ -12,7 +12,7 @@ struct FileViewerView: View {
     /// The main body of the View
     var body: some View {
         VStack {
-            UploadManager.downsampleImage(uploadCandinate.path, to: CGSize(width: 750, height: 750))
+            UploadUtils.downsampleImage(uploadCandinate.path, to: CGSize(width: 750, height: 750))
                 .resizable()
                 .aspectRatio( contentMode: .fit)
                 .padding(.bottom)

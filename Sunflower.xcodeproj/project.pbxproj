@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7010C8B2272E38C900A6EE1F /* SunflowerCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7010C8B1272E38C900A6EE1F /* SunflowerCommands.swift */; };
-		701415F827A6453500B5681A /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 701415F727A6453500B5681A /* UploadManager.swift */; };
+		701415F827A6453500B5681A /* UploadUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 701415F727A6453500B5681A /* UploadUtils.swift */; };
 		701CDD1D27A13224009CF593 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 701CDD1C27A13224009CF593 /* SwiftyJSON */; };
 		704D91D127AABC0A00C8C0DB /* UploadInProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704D91D027AABC0A00C8C0DB /* UploadInProgressView.swift */; };
 		705261B2274A1C5F00030730 /* FileViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705261B1274A1C5F00030730 /* FileViewerView.swift */; };
@@ -32,7 +32,7 @@
 
 /* Begin PBXFileReference section */
 		7010C8B1272E38C900A6EE1F /* SunflowerCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunflowerCommands.swift; sourceTree = "<group>"; };
-		701415F727A6453500B5681A /* UploadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadManager.swift; sourceTree = "<group>"; };
+		701415F727A6453500B5681A /* UploadUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadUtils.swift; sourceTree = "<group>"; };
 		704D91D027AABC0A00C8C0DB /* UploadInProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadInProgressView.swift; sourceTree = "<group>"; };
 		705261B1274A1C5F00030730 /* FileViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileViewerView.swift; sourceTree = "<group>"; };
 		70663CC0272C09A8008759BE /* GlobalDescView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalDescView.swift; sourceTree = "<group>"; };
@@ -116,7 +116,7 @@
 				707250A22728191000D79682 /* Sunflower.entitlements */,
 				707250992728190E00D79682 /* SunflowerApp.swift */,
 				7010C8B1272E38C900A6EE1F /* SunflowerCommands.swift */,
-				701415F727A6453500B5681A /* UploadManager.swift */,
+				701415F727A6453500B5681A /* UploadUtils.swift */,
 				70AE3D8C274E46240079465E /* Wiki.swift */,
 				7072509D2728191000D79682 /* Assets.xcassets */,
 				70663CC4272C0B81008759BE /* Models */,
@@ -219,7 +219,7 @@
 				70D14BC927A16F0500F4B26D /* LoginView.swift in Sources */,
 				707F871D27AEAB2F0067BEDD /* UploadState.swift in Sources */,
 				7079762D27A8125400BC59E5 /* Desc.swift in Sources */,
-				701415F827A6453500B5681A /* UploadManager.swift in Sources */,
+				701415F827A6453500B5681A /* UploadUtils.swift in Sources */,
 				7072509A2728190E00D79682 /* SunflowerApp.swift in Sources */,
 				707250AF2728289C00D79682 /* MediaListView.swift in Sources */,
 				70AE3D8D274E46240079465E /* Wiki.swift in Sources */,

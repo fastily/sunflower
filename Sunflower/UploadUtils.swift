@@ -3,7 +3,7 @@ import SwiftUI
 
 
 /// Miscellaneous convenience methods for managing and uploading images
-class UploadManager {
+class UploadUtils {
 
     /// Downsamples a raster image so it doesn't take up copious amounts of memory when displayed.  Inspired by [this writeup](https://medium.com/@zippicoder/downsampling-images-for-better-memory-consumption-and-uicollectionview-performance-35e0b4526425).
     /// - Parameters:
@@ -39,12 +39,16 @@ class UploadManager {
 
 
 
-    static func performUploads(_ modelData: ModelData, _ i: Int = 0, completion: @escaping () -> () ) {
+    static func performUploads(_ modelData: ModelData) async {
+        for (i, f) in modelData.paths.enumerated() {
+            modelData.uploadState.currentFileName = f.lastPathComponent
+            modelData.uploadState.totalProgress = Double(i+1)/Double(modelData.paths.count)
+            modelData.uploadCandinates[f]!.uploadStatus = await modelData.wiki.upload(f, modelData.uploadCandinates[f]!.details, { p in
 
-        
+                modelData.uploadState.currFileProgress = p
 
-
-
+            }) ? .success : .error
+        }
     }
 
 }

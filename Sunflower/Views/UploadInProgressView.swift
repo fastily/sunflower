@@ -17,7 +17,7 @@ struct UploadInProgressView: View {
                 .padding(.bottom)
 
             ProgressView(value: modelData.uploadState.currFileProgress)
-            Text(modelData.uploadState.currentFileName)
+            Text("Uploading '\(modelData.uploadState.currentFileName)'")
                 .padding(.bottom)
 
             ProgressView(value:modelData.uploadState.totalProgress)
@@ -25,6 +25,7 @@ struct UploadInProgressView: View {
                 .padding(.bottom, 25)
 
             Button("Cancel Upload") {
+                modelData.currentUploadTask?.cancel()
                 dismissSheet()
             }
         }

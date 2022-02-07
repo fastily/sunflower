@@ -15,7 +15,8 @@ class Wiki {
     private static let chunkSize = 1024 * 1024 * 4
 
     /// The base API endpoint to target
-    private static let endpoint = "https://commons.wikimedia.org/w/api.php"
+    //    private static let endpoint = "https://commons.wikimedia.org/w/api.php"
+    private static let endpoint = "https://en.wikipedia.org/w/api.php"
 
     /// The logger associated with this Wiki
     private let log = Logger()
@@ -48,7 +49,7 @@ class Wiki {
 
         let loginToken = await fetchToken(getCSRF: false)
 
-        if let jo = await basicRequest("login", ["lgname": username, "lgpassword": password, "lgtoken": loginToken], .post) {
+        if let jo = await postAction("login", ["lgname": username, "lgpassword": password, "lgtoken": loginToken], false) {
 
             let result = jo["login"]
 
@@ -66,16 +67,16 @@ class Wiki {
     }
 
 
-    func upload(_ path: URL, _ title: String, _ desc: String = "", _ summary: String = "") async -> Bool {
+    func upload(_ path: URL, _ desc: Desc, _ chunkProgressCallback: @escaping (Double) -> ()) async -> Bool {
 
         guard let f = try? FileHandle(forReadingFrom: path), let fsize = try? path.resourceValues(forKeys:[.fileSizeKey]).fileSize else {
             return false
         }
 
-        log.info("Uploading '\(path)' to '\(title)'")
+        log.info("Uploading '\(path)' to '\(desc.title)'")
 
         let totalChunks = fsize / Wiki.chunkSize + 1
-        var pl = ["filename": title, "offset": "0", "ignorewarnings": "1", "filesize": String(fsize), "token": csrfToken, "stash": "1"]
+        var pl = makePL("upload", ["filename": desc.title, "offset": "0", "ignorewarnings": "1", "filesize": String(fsize), "stash": "1"], true)
         var chunkCount = 0
         var filekey = ""
 
@@ -85,16 +86,30 @@ class Wiki {
             for errCount in 0..<5 {
                 log.info("Uploading chunk \(chunkCount+1) of \(totalChunks) from \(path)")
 
-                if let r = try? await AF.upload(multipartFormData: { multipartFormData in
+                let request = AF.upload(multipartFormData: { multipartFormData in
+                    // The file chunk
+                    multipartFormData.append(buffer, withName: "chunk", fileName: path.lastPathComponent, mimeType: "multipart/form-data")
+
                     // Standard parameters
                     for (k, v) in pl {
                         multipartFormData.append(Data(v.utf8), withName: k)
                     }
 
-                    // The file chunk
-                    multipartFormData.append(buffer, withName: "chunk", fileName: path.lastPathComponent, mimeType: "multipart/form-data")
-                }, to: Wiki.endpoint).serializingData().value, let jo = try? JSON(data: r) {
+                    print(multipartFormData.boundary)
 
+                }, to: Wiki.endpoint, method: .post).serializingData()
+
+//                print(await request.response)
+                print("----")
+//                print(await request.result)
+                print(String(decoding: try! await request.value, as: UTF8.self))
+
+                print("\n\n\n\n")
+
+
+                if let r = try? await request.value, let jo = try? JSON(data: r) {
+
+                    print(jo)
                     let result = jo["upload"]
 
                     // check for chunk errors
@@ -107,6 +122,7 @@ class Wiki {
                     filekey = result["filekey"].string!
                     pl["filekey"] = filekey
                     pl["offset"] = String(Wiki.chunkSize * chunkCount)
+                    chunkProgressCallback(Double(chunkCount)/Double(totalChunks))
 
                     chunkWasUploaded = true
                     break
@@ -124,8 +140,13 @@ class Wiki {
         }
 
         try? f.close()
+        //Uploaded with Sunflower \(Bundle.main.infoDictionary!["CFBundleShortVersionString"]!)
 
-        if let jo = await basicRequest("upload", ["filename": title, "text": desc, "comment": summary, "filekey": filekey, "ignorewarnings": "1"], .post), let result = jo["upload", "result"].string {
+        let stashResult = await postAction("upload", ["filename": desc.title, "text": desc.description, "comment": "test 12345", "filekey": filekey, "ignorewarnings": "1"])
+//        print( stashResult)
+
+        if let jo = stashResult, let result = jo["upload", "result"].string {
+            print(jo)
             return result == "Success"
         }
 
@@ -146,7 +167,7 @@ class Wiki {
 
         log.debug("Fetching \(prefix) token...")
 
-        if let jo = await basicRequest("query", pl), let token = jo["query", "tokens", prefix + "token"].string {
+        if let jo = await basicQuery(pl), let token = jo["query", "tokens", prefix + "token"].string {
             return token
         }
 
@@ -158,7 +179,7 @@ class Wiki {
     private func uploadableFileTypes() async {
         log.info("Fetching a list of acceptable file upload extensions.")
 
-        if let jo = await basicRequest("query", ["meta": "siteinfo", "siprop": "fileextensions"]) {
+        if let jo = await basicQuery(["meta": "siteinfo", "siprop": "fileextensions"]) {
             self.valid_file_exts = Array(Set(jo["query", "fileextensions"].arrayValue.map { UTType(filenameExtension: $0["ext"].string!)! }))
         }
     }
@@ -166,7 +187,7 @@ class Wiki {
     func validateCredentials() async -> Bool {
         csrfToken = await fetchToken()
 
-        if csrfToken != "+\\", let jo = await basicRequest("query", ["meta": "userinfo"]) {
+        if csrfToken != "+\\", let jo = await basicQuery(["meta": "userinfo"]) {
             username = jo["query", "userinfo", "name"].string ?? ""
 
             return true
@@ -178,14 +199,23 @@ class Wiki {
 
     // MARK: - CONVENIENCE FUNCTIONS
 
+    private func postAction(_ action: String, _ params: [String:String] = [:], _ applyToken: Bool = true) async -> JSON? {
+        await basicRequest(action: action, params: params, method: .post, applyToken: applyToken)
+    }
+
+    private func basicQuery(_ params: [String:String] = [:]) async -> JSON? {
+        await basicRequest(action: "query", params: params)
+    }
+
+
     /// Convenience method, performs a basic HTTP request to the API
     /// - Parameters:
     ///   - action: The API action to perform
     ///   - params: Parameters to pass to the API (excluding the `defaultParams`, which will be added automatically)
     ///   - method: The HTTP method to use to perform the request
     /// - Returns: A `DataRequest` with the results of this request
-    private func basicRequest(_ action: String, _ params: [String:String] = [:], _ method: HTTPMethod = .get) async -> JSON? {
-        if let v =  try? await AF.request(Wiki.endpoint, method: method, parameters: makePL(action, params)).serializingData().value, let jo = try? JSON(data: v) {
+    private func basicRequest(action: String, params: [String:String] = [:], method: HTTPMethod = .get, applyToken: Bool = false) async -> JSON? {
+        if let v =  try? await AF.request(Wiki.endpoint, method: method, parameters: makePL(action, params, applyToken)).serializingData().value, let jo = try? JSON(data: v) {
             return jo
         }
 
@@ -198,9 +228,14 @@ class Wiki {
     ///   - action: The API action to perform
     ///   - params: The dictionary to merge with the default parameters
     /// - Returns: A new `Dictionary` with the default parameters and the specified parameters
-    private func makePL(_ action: String, _ params: [String:String] = [:]) -> [String:String] {
+    private func makePL(_ action: String, _ params: [String:String] = [:], _ applyToken: Bool = false) -> [String:String] {
         var d = Wiki.defaultParams.merging(params) {(c, _) in c}
         d["action"] = action
+
+        if applyToken {
+            d["token"] = csrfToken
+        }
+
         return d
     }
 }

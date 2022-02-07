@@ -20,6 +20,8 @@ class ModelData: ObservableObject {
 
     @Published var uploadState = UploadState()
 
+    var currentUploadTask: Task<(), Never>?
+
     /// Adds a file to the list of files to upload
     /// - Parameter path: The path `URL` to the file to upload
     func addFile(_ path: URL) {

@@ -26,7 +26,10 @@ class Desc: ObservableObject {
     
     /// The text to use in the license section of the file decription page
     @Published var lic = ""
-    
+
+
+    // TODO: merge in global desc
+
     /// The generated file description page, based on the properties in this `Desc`
     var description: String {
         return """

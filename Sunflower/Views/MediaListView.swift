@@ -2,24 +2,24 @@ import SwiftUI
 
 /// The main UI window that gets shown to the user
 struct MediaListView: View {
-
+    
     /// The globally shared model data between views
     @EnvironmentObject var modelData: ModelData
-
+    
     /// The currently selected file (via the sidebar) to show the file description editing interface
     @State private var selectedMedia: URL?
-
+    
     @State private var showingLogin = false
-
+    
     @State private var showingGlobalDesc = false
-
+    
     @State private var showingUploadInProgress = false
-
+    
     var body: some View {
         NavigationView {
             VStack {
                 List(selection: $selectedMedia) {
-
+                    
                     Section(header: Text("Files to Upload")) {
                         ForEach(modelData.paths, id: \.self) { path in
                             NavigationLink(destination: FileDescView(uploadCandinate: modelData.uploadCandinates[path]!)) {
@@ -29,32 +29,32 @@ struct MediaListView: View {
                         }
                     }
                     .collapsible(false)
-
+                    
                 }
-
+                
                 //                .id(UUID())
             }
             .frame(minWidth: 350)
             .toolbar {
-
+                
                 // button - add file dialog
                 Button(action: {
                     let panel = NSOpenPanel()
                     panel.allowsMultipleSelection = true
                     panel.allowedContentTypes = modelData.wiki.valid_file_exts
-
+                    
                     if panel.runModal() == .OK {
                         for u in panel.urls {
                             modelData.addFile(u)
                         }
-
+                        
                         print(modelData.paths)
                     }
                 }) {
                     Label("Add", systemImage: "plus.app")
                 }
                 .help("Choose files to upload")
-
+                
                 // button - show global config sheet
                 Button(action: {
                     showingGlobalDesc = true
@@ -65,13 +65,21 @@ struct MediaListView: View {
                 .sheet(isPresented: $showingGlobalDesc) {
                     GlobalDescView()
                 }
-
+                
                 Spacer()
-
+                
                 if modelData.isLoggedIn {
                     // button - start upload
                     Button(action: {
                         showingUploadInProgress = true
+                        
+                        // TODO: sanity check titles
+                        
+                        modelData.currentUploadTask = Task {
+                            await UploadUtils.performUploads(modelData)
+                            showingUploadInProgress = false
+                        }
+                        
                     }) {
                         Label("Upload", systemImage: "play.fill")
                     }
@@ -93,7 +101,7 @@ struct MediaListView: View {
                     .help("Login to your Wikimedia account")
                 }
             }
-
+            
             if modelData.paths.isEmpty {
                 Text("Click [+] to add media")
             }

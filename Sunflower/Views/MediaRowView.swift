@@ -7,7 +7,7 @@ struct MediaRowView: View {
 
     var body: some View {
         LazyHStack {
-            UploadManager.downsampleImage(uploadCandinate.path)
+            UploadUtils.downsampleImage(uploadCandinate.path)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 55, height: 55)
