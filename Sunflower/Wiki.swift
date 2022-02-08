@@ -12,7 +12,7 @@ class Wiki {
     private static let defaultParams = ["format": "json", "formatversion" : "2"]
 
     /// The maximum size (in bytes) of each chunk to upload when uploading files
-    private static let chunkSize = 1024 * 1024 * 4
+    private static let chunkSize = 1024 * 1024 * 1
 
     /// The base API endpoint to target
     //    private static let endpoint = "https://commons.wikimedia.org/w/api.php"
@@ -67,7 +67,13 @@ class Wiki {
     }
 
 
-    func upload(_ path: URL, _ desc: Desc, _ chunkProgressCallback: @escaping (Double) -> ()) async -> Bool {
+    /// Upload a file via the MediaWiki API
+    /// - Parameters:
+    ///   - path: The path to the file to upload
+    ///   - desc: The `Desc` object associated with the file to upload
+    ///   - modelData: The shared `ModelData` to use for updating upload status
+    /// - Returns: `true` if the upload was successful
+    func upload(_ path: URL, _ desc: Desc, _ modelData: ModelData) async -> Bool {
 
         guard let f = try? FileHandle(forReadingFrom: path), let fsize = try? path.resourceValues(forKeys:[.fileSizeKey]).fileSize else {
             return false
@@ -86,7 +92,7 @@ class Wiki {
             for errCount in 0..<5 {
                 log.info("Uploading chunk \(chunkCount+1) of \(totalChunks) from \(path)")
 
-                let request = AF.upload(multipartFormData: { multipartFormData in
+                if let r = try? await AF.upload(multipartFormData: { multipartFormData in
                     // The file chunk
                     multipartFormData.append(buffer, withName: "chunk", fileName: path.lastPathComponent, mimeType: "multipart/form-data")
 
@@ -94,22 +100,8 @@ class Wiki {
                     for (k, v) in pl {
                         multipartFormData.append(Data(v.utf8), withName: k)
                     }
+                }, to: Wiki.endpoint, method: .post).serializingData().value, let jo = try? JSON(data: r) {
 
-                    print(multipartFormData.boundary)
-
-                }, to: Wiki.endpoint, method: .post).serializingData()
-
-//                print(await request.response)
-                print("----")
-//                print(await request.result)
-                print(String(decoding: try! await request.value, as: UTF8.self))
-
-                print("\n\n\n\n")
-
-
-                if let r = try? await request.value, let jo = try? JSON(data: r) {
-
-                    print(jo)
                     let result = jo["upload"]
 
                     // check for chunk errors
@@ -118,35 +110,36 @@ class Wiki {
                         continue
                     }
 
+                    // chunk was successfully uploaded
                     chunkCount += 1
                     filekey = result["filekey"].string!
                     pl["filekey"] = filekey
                     pl["offset"] = String(Wiki.chunkSize * chunkCount)
-                    chunkProgressCallback(Double(chunkCount)/Double(totalChunks))
-
                     chunkWasUploaded = true
                     break
                 }
-                else {
+                else { // probably encountered server error, retry
                     log.info("Encountered error while uploading, this was \(errCount)/5")
                 }
             }
 
+            // if failed to upload a chunk after retries, abort
             if !chunkWasUploaded {
                 log.error("Exceeded error threshold, abort upload of \(path)")
                 try? f.close()
                 return false
             }
+
+            // update upload status in model
+            let currFileProgress =  Double(chunkCount)/Double(totalChunks)
+            await MainActor.run {
+                modelData.uploadState.currFileProgress = currFileProgress
+            }
         }
 
+        // close local file descriptor & unstash on server
         try? f.close()
-        //Uploaded with Sunflower \(Bundle.main.infoDictionary!["CFBundleShortVersionString"]!)
-
-        let stashResult = await postAction("upload", ["filename": desc.title, "text": desc.description, "comment": "test 12345", "filekey": filekey, "ignorewarnings": "1"])
-//        print( stashResult)
-
-        if let jo = stashResult, let result = jo["upload", "result"].string {
-            print(jo)
+        if let jo = await postAction("upload", ["filename": desc.title, "text": desc.description, "comment": "test 12345", "filekey": filekey, "ignorewarnings": "1"]), let result = jo["upload", "result"].string { //Uploaded with Sunflower \(Bundle.main.infoDictionary!["CFBundleShortVersionString"]!)
             return result == "Success"
         }
 
@@ -184,6 +177,9 @@ class Wiki {
         }
     }
 
+
+    /// Checks if the session derived from the locally stored cookies is still valid.  If it is, configure this `Wiki` as logged in.
+    /// - Returns: `true` if the session is valid
     func validateCredentials() async -> Bool {
         csrfToken = await fetchToken()
 
@@ -199,21 +195,30 @@ class Wiki {
 
     // MARK: - CONVENIENCE FUNCTIONS
 
+    /// Performs a simple `action` (write) action via the API.
+    /// - Parameters:
+    ///   - action: The API action to perform
+    ///   - params: The parameters to pass to the API (excluding the `defaultParams`, which will be added automatically)
+    ///   - applyToken: Set `true` to add the csrf token to the request parameters
+    /// - Returns: `JSON` containing the results of this request, or `nil` if something went wrong
     private func postAction(_ action: String, _ params: [String:String] = [:], _ applyToken: Bool = true) async -> JSON? {
         await basicRequest(action: action, params: params, method: .post, applyToken: applyToken)
     }
 
+    /// Performs a simple `query` (read) action via the API.
+    /// - Parameter params: The parameters to pass to the API (excluding the `defaultParams`, which will be added automatically)
+    /// - Returns: `JSON` containing the results of this request, or `nil` if something went wrong
     private func basicQuery(_ params: [String:String] = [:]) async -> JSON? {
         await basicRequest(action: "query", params: params)
     }
 
-
-    /// Convenience method, performs a basic HTTP request to the API
+    /// Performs a basic HTTP request to the API.
     /// - Parameters:
     ///   - action: The API action to perform
     ///   - params: Parameters to pass to the API (excluding the `defaultParams`, which will be added automatically)
     ///   - method: The HTTP method to use to perform the request
-    /// - Returns: A `DataRequest` with the results of this request
+    ///   - applyToken: Set `true` to add the csrf token to the request parameters
+    /// - Returns: `JSON` containing the results of this request, or `nil` if something went wrong
     private func basicRequest(action: String, params: [String:String] = [:], method: HTTPMethod = .get, applyToken: Bool = false) async -> JSON? {
         if let v =  try? await AF.request(Wiki.endpoint, method: method, parameters: makePL(action, params, applyToken)).serializingData().value, let jo = try? JSON(data: v) {
             return jo
@@ -227,6 +232,7 @@ class Wiki {
     /// - Parameters:
     ///   - action: The API action to perform
     ///   - params: The dictionary to merge with the default parameters
+    ///   - applyToken: Set `true` to add the csrf token to the request parameters
     /// - Returns: A new `Dictionary` with the default parameters and the specified parameters
     private func makePL(_ action: String, _ params: [String:String] = [:], _ applyToken: Bool = false) -> [String:String] {
         var d = Wiki.defaultParams.merging(params) {(c, _) in c}

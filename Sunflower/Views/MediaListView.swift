@@ -14,7 +14,8 @@ struct MediaListView: View {
     @State private var showingGlobalDesc = false
     
     @State private var showingUploadInProgress = false
-    
+
+    /// The main body of the View
     var body: some View {
         NavigationView {
             VStack {
@@ -71,10 +72,11 @@ struct MediaListView: View {
                 if modelData.isLoggedIn {
                     // button - start upload
                     Button(action: {
+                        modelData.uploadState.reset()
                         showingUploadInProgress = true
                         
                         // TODO: sanity check titles
-                        
+
                         modelData.currentUploadTask = Task {
                             await UploadUtils.performUploads(modelData)
                             showingUploadInProgress = false

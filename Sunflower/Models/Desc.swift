@@ -16,7 +16,7 @@ class Desc: ObservableObject {
     @Published var date = ""
     
     /// The text to put in the `author` parameter of the `Information` template on the file description page.
-    @Published var author = "~~~~"
+    @Published var author = "~~~"
     
     /// The text to put in the `permission` parameter of the `Information` template on the file description page.
     @Published var permission = ""

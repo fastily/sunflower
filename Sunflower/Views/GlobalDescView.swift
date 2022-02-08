@@ -6,7 +6,8 @@ struct GlobalDescView: View {
     @Environment(\.presentationMode) var presentationMode
     
     @EnvironmentObject var modelData: ModelData
-    
+
+    /// The main body of the View
     var body: some View {
         
         ScrollView {

@@ -38,16 +38,32 @@ class UploadUtils {
     }
 
 
-
+    /// Performs an upload with the specified `UploadCandinate` objecs in `modelData`
+    /// - Parameter modelData: The `ModelData` object containing hte `UploadCandinate` objects to upload
     static func performUploads(_ modelData: ModelData) async {
+
         for (i, f) in modelData.paths.enumerated() {
-            modelData.uploadState.currentFileName = f.lastPathComponent
-            modelData.uploadState.totalProgress = Double(i+1)/Double(modelData.paths.count)
-            modelData.uploadCandinates[f]!.uploadStatus = await modelData.wiki.upload(f, modelData.uploadCandinates[f]!.details, { p in
+            let currUploadCandinate = modelData.uploadCandinates[f]!
 
-                modelData.uploadState.currFileProgress = p
+            await MainActor.run {
+                modelData.uploadState.currentFileName = f.lastPathComponent
+                modelData.uploadState.totalProgress = Double(i)/Double(modelData.paths.count)
+                modelData.uploadState.currFileProgress = 0.0
 
-            }) ? .success : .error
+//                print(modelData.uploadState.totalProgress)
+            }
+
+            do {
+                try await Task.sleep(nanoseconds: 1_000_000_000) // hack, allow UI time to catch up
+            }
+            catch {
+                break
+            }
+
+            let result: Status = await modelData.wiki.upload(f, currUploadCandinate.details, modelData) ? .success : .error
+            await MainActor.run {
+                currUploadCandinate.uploadStatus = result
+            }
         }
     }
 

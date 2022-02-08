@@ -18,8 +18,10 @@ class ModelData: ObservableObject {
     /// The paths (as `URL`s) to the files to upload.  This exists as an optimization so the entire `MediaList` view doesn't have to be redrawn every time an update occurs.
     @Published var paths = [URL]()
 
+    /// Tracks the current state of any ongoing upload job
     @Published var uploadState = UploadState()
 
+    /// The currently running background upload task, if applicable.
     var currentUploadTask: Task<(), Never>?
 
     /// Adds a file to the list of files to upload
@@ -35,8 +37,4 @@ class ModelData: ObservableObject {
         uploadCandinates.removeValue(forKey: path)
         paths.remove(at: paths.firstIndex(of: path)!)
     }
-    
-    
-    //    // hike data never changes, so no need to mark it as @Published
-    //    var hikes: [Hike] = load("hikeData.json")
 }

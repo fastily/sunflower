@@ -5,6 +5,7 @@ struct MediaRowView: View {
 
     @ObservedObject var uploadCandinate: UploadCandinate
 
+    /// The main body of the View
     var body: some View {
         LazyHStack {
             UploadUtils.downsampleImage(uploadCandinate.path)

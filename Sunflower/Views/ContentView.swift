@@ -6,12 +6,11 @@ struct ContentView: View {
     /// The globally shared model data between views
     @EnvironmentObject var modelData: ModelData
 
+    /// The main body of the View
     var body: some View {
         MediaListView()
-            .onAppear {
-                Task {
-                    modelData.isLoggedIn = await modelData.wiki.validateCredentials()
-                }
+            .task {
+                modelData.isLoggedIn = await modelData.wiki.validateCredentials()
             }
     }
 }

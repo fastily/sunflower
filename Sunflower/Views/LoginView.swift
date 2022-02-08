@@ -22,6 +22,7 @@ struct LoginView: View {
     /// Indicates if the user entered in bad credentials.  Should show the user a message informing them of what happened.
     @State private var loginJustFailed = false
 
+    /// The main body of the View
     var body: some View {
         VStack {
             Text("Login to Commons")

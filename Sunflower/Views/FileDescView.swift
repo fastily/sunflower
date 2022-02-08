@@ -35,7 +35,7 @@ struct FileDescView: View {
                     Button(action: {
                         modelData.removeFile(uploadCandinate.path)
 
-                        print("Trash clicked 3")
+//                        print("Trash clicked 3")
                         wasDeleted = true
                         //self.presentation.wrappedValue.dismiss()
                     }) {
