@@ -39,7 +39,7 @@ struct FileDescView: View {
                         wasDeleted = true
                         //self.presentation.wrappedValue.dismiss()
                     }) {
-                        Label("Remove", systemImage: "trash")
+                        Label("Remove", systemImage: "x.circle.fill")
                     }
                     .help("Remove this file from the upload")
 

@@ -14,7 +14,7 @@ class UploadCandinate: ObservableObject {
     
     /// Initializer, creates a new UploadCandinate with the specified path `URL`
     /// - Parameter path: The path to the file to upload
-    init(_ path: URL ) {
+    init(_ path: URL) {
         self.path = path
     }
 }

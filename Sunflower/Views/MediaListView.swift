@@ -18,23 +18,22 @@ struct MediaListView: View {
     /// The main body of the View
     var body: some View {
         NavigationView {
-            VStack {
-                List(selection: $selectedMedia) {
-                    
-                    Section(header: Text("Files to Upload")) {
-                        ForEach(modelData.paths, id: \.self) { path in
-                            NavigationLink(destination: FileDescView(uploadCandinate: modelData.uploadCandinates[path]!)) {
-                                MediaRowView(uploadCandinate: modelData.uploadCandinates[path]!)
-                            }
-                            .tag(path)
+            List(selection: $selectedMedia) {
+
+                Section(header: Text("Files to Upload")) {
+                    ForEach(modelData.paths, id: \.self) { path in
+                        NavigationLink(destination: FileDescView(uploadCandinate: modelData.uploadCandinates[path]!)) {
+                            MediaRowView(uploadCandinate: modelData.uploadCandinates[path]!)
                         }
+                        .tag(path)
                     }
-                    .collapsible(false)
-                    
+
                 }
-                
-                //                .id(UUID())
+                .collapsible(false)
             }
+
+            //                .id(UUID())
+
             .frame(minWidth: 350)
             .toolbar {
                 

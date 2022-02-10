@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a file description page for a file to be uploaded
 class Desc: ObservableObject {
-    
+
     /// The title to upload the image with.  Do not include `File:` prefix.
     @Published var title = ""
     
