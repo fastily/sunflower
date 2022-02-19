@@ -28,23 +28,25 @@ class Desc: ObservableObject {
     @Published var lic = ""
 
 
-    // TODO: merge in global desc
+    private static func trim(_ s: String) -> String {
+        s.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 
-    /// The generated file description page, based on the properties in this `Desc`
-    var description: String {
-        return """
-=={{int:filedesc}}==
-{{Information
-|description=\(desc)
-|date=\(date)
-|source=\(source)
-|author=\(author)
-}}
+    //TODO: automatically add ext if missing
+    func formatForUpload() {
+        // remove leading/trailing whitespace
+        title = Desc.trim(title)
+        desc = Desc.trim(desc)
+        source = Desc.trim(source)
+        date = Desc.trim(date)
+        author = Desc.trim(author)
+        permission = Desc.trim(permission)
+        cat = Desc.trim(cat)
+        lic = Desc.trim(lic)
 
-=={{int:license-header}}==
-\(lic)
-
-\(cat)
-"""
+        if title.lowercased().hasPrefix("file:") {
+            title = String(title[title.index(title.startIndex, offsetBy: 5)...])
+        }
+        
     }
 }

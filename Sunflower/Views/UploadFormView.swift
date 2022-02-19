@@ -14,39 +14,47 @@ struct UploadFormView: View {
     var body: some View {
         
         Form {
-            if showTitleField {
-                Section(header: makeSectionHeader("Title")) {
-                    TextField("", text:$d.title)
-                }
+            Section(header: makeSectionHeader("Title")) {
+                TextField("", text:$d.title)
+                    .padding(.bottom)
             }
             
             Section(header: makeSectionHeader("Description")) {
                 TextEditor(text: $d.desc)
-                    .frame(minHeight: 50, alignment: .leading)
+                    .frame(minHeight: 30, alignment: .leading)
+                    .padding(.bottom)
             }
             
             Section(header: makeSectionHeader("Source")) {
                 TextField("", text:$d.source)
+                    .padding(.bottom)
             }
             
             Section(header: makeSectionHeader("Date")) {
                 TextField("", text:$d.date)
+                    .padding(.bottom)
             }
             
             Section(header: makeSectionHeader("Author")) {
                 TextField("", text:$d.author)
+                    .padding(.bottom)
             }
             
             Section(header: makeSectionHeader("Permission")) {
                 TextField("", text:$d.permission)
+                    .padding(.bottom)
             }
             
             Section(header: makeSectionHeader("Licensing")) {
-                TextField("", text:$d.lic)
+                TextEditor(text: $d.lic)
+                    .frame(minHeight: 30, alignment: .leading)
+                    .padding(.bottom)
             }
             
             Section(header: makeSectionHeader("Categories")) {
-                TextField("", text:$d.cat)
+                TextEditor(text: $d.cat)
+                    .frame(minHeight: 30, alignment: .leading)
+                    .padding(.bottom)
             }
         }
         
@@ -63,7 +71,7 @@ struct UploadFormView: View {
 struct UploadFormView_Previews: PreviewProvider {
     static var previews: some View {
         UploadFormView(d: Desc())
-            .frame(minWidth: 900, minHeight: 500)
+            .frame(minWidth: 900, minHeight: 650)
         
     }
 }

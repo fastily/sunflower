@@ -14,6 +14,7 @@ struct FileDescView: View {
     var body: some View {
         
         if !wasDeleted {
+            ScrollView {
             UploadFormView(d: uploadCandinate.details)
                 .navigationTitle("Details for \(uploadCandinate.path.lastPathComponent)")
                 .padding(30)
@@ -30,12 +31,9 @@ struct FileDescView: View {
                     }
                     .help("View file")
 
-
                     // button - unstage file from upload
                     Button(action: {
                         modelData.removeFile(uploadCandinate.path)
-
-//                        print("Trash clicked 3")
                         wasDeleted = true
                         //self.presentation.wrappedValue.dismiss()
                     }) {
@@ -44,6 +42,8 @@ struct FileDescView: View {
                     .help("Remove this file from the upload")
 
                 }
+            }
+            .frame(minHeight:600)
         }
         
     }

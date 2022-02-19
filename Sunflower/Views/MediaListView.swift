@@ -15,6 +15,10 @@ struct MediaListView: View {
     
     @State private var showingUploadInProgress = false
 
+    @State private var showingPreflightCheckError = false
+
+    @State private var preflightErrorMessage = ""
+
     /// The main body of the View
     var body: some View {
         NavigationView {
@@ -75,17 +79,26 @@ struct MediaListView: View {
                         showingUploadInProgress = true
                         
                         // TODO: sanity check titles
-
-                        modelData.currentUploadTask = Task {
-                            await UploadUtils.performUploads(modelData)
-                            showingUploadInProgress = false
+                        if let errMsg = UploadUtils.preflightCheck(modelData) {
+                            preflightErrorMessage = "\(errMsg).  Please fix this before proceeding."
+                            showingPreflightCheckError = true
+                        }
+                        else {
+                            modelData.currentUploadTask = Task {
+                                await UploadUtils.performUploads(modelData)
+                                showingUploadInProgress = false
+                            }
                         }
                         
                     }) {
                         Label("Upload", systemImage: "play.fill")
                     }
+                    .disabled(modelData.paths.isEmpty)
                     .sheet(isPresented: $showingUploadInProgress) {
                         UploadInProgressView()
+                    }
+                    .alert("Error", isPresented: $showingPreflightCheckError, actions: {}) {
+                        Text(preflightErrorMessage)
                     }
                     .help("Peform upload")
                 }

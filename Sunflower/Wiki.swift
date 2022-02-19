@@ -70,19 +70,20 @@ class Wiki {
     /// Upload a file via the MediaWiki API
     /// - Parameters:
     ///   - path: The path to the file to upload
-    ///   - desc: The `Desc` object associated with the file to upload
+    ///   - title: The title to upload the file to (do not include namespace)
+    ///   - desc: The text to put on the file description page
     ///   - modelData: The shared `ModelData` to use for updating upload status
     /// - Returns: `true` if the upload was successful
-    func upload(_ path: URL, _ desc: Desc, _ modelData: ModelData) async -> Bool {
+    func upload(_ path: URL, _ title: String, _ desc: String, _ modelData: ModelData) async -> Bool {
 
         guard let f = try? FileHandle(forReadingFrom: path), let fsize = try? path.resourceValues(forKeys:[.fileSizeKey]).fileSize else {
             return false
         }
 
-        log.info("Uploading '\(path)' to '\(desc.title)'")
+        log.info("Uploading '\(path)' to '\(title)'")
 
         let totalChunks = fsize / Wiki.chunkSize + 1
-        var pl = makePL("upload", ["filename": desc.title, "offset": "0", "ignorewarnings": "1", "filesize": String(fsize), "stash": "1"], true)
+        var pl = makePL("upload", ["filename": title, "offset": "0", "ignorewarnings": "1", "filesize": String(fsize), "stash": "1"], true)
         var chunkCount = 0
         var filekey = ""
 
@@ -139,7 +140,7 @@ class Wiki {
 
         // close local file descriptor & unstash on server
         try? f.close()
-        if let jo = await postAction("upload", ["filename": desc.title, "text": desc.description, "comment": "test 12345", "filekey": filekey, "ignorewarnings": "1"]), let result = jo["upload", "result"].string { //Uploaded with Sunflower \(Bundle.main.infoDictionary!["CFBundleShortVersionString"]!)
+        if let jo = await postAction("upload", ["filename": title, "text": desc, "comment": "test 12345", "filekey": filekey, "ignorewarnings": "1"]), let result = jo["upload", "result"].string { //Uploaded with Sunflower \(Bundle.main.infoDictionary!["CFBundleShortVersionString"]!)
             return result == "Success"
         }
 

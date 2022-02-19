@@ -51,11 +51,7 @@ struct LoginView: View {
                     }
                 }
                 .disabled(loginInProgress)
-                .alert("Incorrect username/password, please try again.", isPresented: $loginJustFailed) {
-                    Button("OK", role: .cancel) {
-                        // nobody cares
-                    }
-                }
+                .alert("Incorrect username/password, please try again.", isPresented: $loginJustFailed, actions: {})
                 .keyboardShortcut(.defaultAction)
                 .padding(.trailing, 10)
 

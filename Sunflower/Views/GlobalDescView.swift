@@ -20,7 +20,7 @@ struct GlobalDescView: View {
                 
             }.keyboardShortcut(.defaultAction)
         }
-        .frame(minWidth:800, minHeight:400)
+        .frame(minWidth:800, minHeight:400, maxHeight: 650)
         .padding()
         .navigationTitle("Edit Global Description")
         
