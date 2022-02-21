@@ -1,14 +1,16 @@
 import Foundation
 import SwiftUI
-
+import UniformTypeIdentifiers
 
 /// Miscellaneous convenience methods for managing and uploading images
 class UploadUtils {
 
+    /// The image extensions which are supported by Sunflower for thumbnailing/previewing
+    static let displayableImgExts: Set = [UTType(filenameExtension: "jpg"), UTType(filenameExtension: "png")]
+
     private static let indexTemplate = "{i}"
 
     private static let badTitleChars = CharacterSet(charactersIn: "#<>[]{}_|:")
-
 
     /// Downsamples a raster image so it doesn't take up copious amounts of memory when displayed.  Inspired by [this writeup](https://medium.com/@zippicoder/downsampling-images-for-better-memory-consumption-and-uicollectionview-performance-35e0b4526425).
     /// - Parameters:
@@ -43,8 +45,13 @@ class UploadUtils {
     }
 
 
+    static func isDisplayableFile(_ p: URL) -> Bool {
+        displayableImgExts.contains(UTType(filenameExtension: p.pathExtension)!)
+    }
+
+
     private static func titleIsBad(_ title: String, _ emptyOk: Bool = true) -> Bool {
-        CharacterSet(charactersIn: title).isDisjoint(with: badTitleChars) && (emptyOk || title.isEmpty)
+        !(CharacterSet(charactersIn: title).isDisjoint(with: badTitleChars) && (emptyOk || title.isEmpty))
     }
 
     private static func titleFromGD(_ modelData: ModelData, _ cnt: Int = 0) -> String {
@@ -59,14 +66,22 @@ class UploadUtils {
         modelData.globalDesc.formatForUpload()
         let hasGlobalTitle = !modelData.globalDesc.title.isEmpty
 
+        let title = modelData.globalDesc.title
+
         // check for illegal chars in global title
         if hasGlobalTitle {
-            if !modelData.globalDesc.title.contains(indexTemplate) {
+            if !title.contains(indexTemplate) {
                 return "Global title must contain index '\(indexTemplate)'"
             }
             else if titleIsBad(titleFromGD(modelData)) {
                 return "Global title contains invalid characters"
             }
+//            else if (try! NSRegularExpression(pattern: modelData.wiki.extRegex)).firstMatch(in: title, options: [], range: NSRange(title.startIndex..., in: title)) != nil {
+            else if title.range(of: modelData.wiki.extRegex, options: .regularExpression) != nil {
+                return "Global title may not contain a file extension"
+            }
+
+            print(modelData.wiki.extRegex)
         }
 
         // check for illegal chars in titles
@@ -96,12 +111,14 @@ class UploadUtils {
         for (i, f) in modelData.paths.enumerated() {
             let currUploadCandinate = modelData.uploadCandinates[f]!
 
+            // reset progress bar for the current file being uploaded
             await MainActor.run {
                 modelData.uploadState.currentFileName = f.lastPathComponent
                 modelData.uploadState.totalProgress = Double(i)/Double(modelData.paths.count)
                 modelData.uploadState.currFileProgress = 0.0
             }
 
+            // if using global config, generate a title
             if currUploadCandinate.details.title.isEmpty {
                 globalTitleCnt += 1
                 title = titleFromGD(modelData, globalTitleCnt).replacingOccurrences(of: "{d}", with: today)
@@ -109,6 +126,9 @@ class UploadUtils {
             else {
                 title = currUploadCandinate.details.title
             }
+
+            // ensure file extension
+            title = "\(title.replacingOccurrences(of: modelData.wiki.extRegex, with: "", options: [.regularExpression])).\(currUploadCandinate.path.pathExtension.lowercased())"
 
             let desc = """
 =={{int:filedesc}}==

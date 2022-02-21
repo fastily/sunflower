@@ -25,7 +25,12 @@ struct FileDescView: View {
 
                     // button - view file
                     Button(action: {
-                        showFileSheet = true
+                        if UploadUtils.isDisplayableFile(uploadCandinate.path) {
+                            showFileSheet = true
+                        }
+                        else {
+                            NSWorkspace.shared.activateFileViewerSelecting([uploadCandinate.path])
+                        }
                     }) {
                         Label("View Image", systemImage: "eye")
                     }
@@ -37,7 +42,7 @@ struct FileDescView: View {
                         wasDeleted = true
                         //self.presentation.wrappedValue.dismiss()
                     }) {
-                        Label("Remove", systemImage: "x.circle.fill")
+                        Label("Remove", systemImage: "trash")
                     }
                     .help("Remove this file from the upload")
 

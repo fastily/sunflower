@@ -11,6 +11,9 @@ import SwiftUI
         WindowGroup {
             ContentView()
                 .environmentObject(modelData)
+                .onAppear {
+                    NSWindow.allowsAutomaticWindowTabbing = false
+                }
         }
         .commands {
             SunflowerCommands()

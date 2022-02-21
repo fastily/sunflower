@@ -75,19 +75,20 @@ struct MediaListView: View {
                 if modelData.isLoggedIn {
                     // button - start upload
                     Button(action: {
-                        modelData.uploadState.reset()
-                        showingUploadInProgress = true
-                        
                         // TODO: sanity check titles
                         if let errMsg = UploadUtils.preflightCheck(modelData) {
                             preflightErrorMessage = "\(errMsg).  Please fix this before proceeding."
                             showingPreflightCheckError = true
                         }
                         else {
-                            modelData.currentUploadTask = Task {
-                                await UploadUtils.performUploads(modelData)
-                                showingUploadInProgress = false
-                            }
+//                            modelData.uploadState.reset()
+//                            showingUploadInProgress = true
+//
+//                            modelData.currentUploadTask = Task {
+//                                await UploadUtils.performUploads(modelData)
+//                                showingUploadInProgress = false
+//                            }
+                            print("ok - would upload")
                         }
                         
                     }) {

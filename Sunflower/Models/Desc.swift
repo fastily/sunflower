@@ -27,12 +27,15 @@ class Desc: ObservableObject {
     /// The text to use in the license section of the file decription page
     @Published var lic = ""
 
-
+    
+    /// Convenience method, removes leading & trailing whitespace for the input String
+    /// - Parameter s: The String to trim
+    /// - Returns: A copy of `s` with leading & trailing whitespace removed
     private static func trim(_ s: String) -> String {
         s.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    //TODO: automatically add ext if missing
+    /// Formats the fields of this object in preparation for uploading.
     func formatForUpload() {
         // remove leading/trailing whitespace
         title = Desc.trim(title)
@@ -44,6 +47,7 @@ class Desc: ObservableObject {
         cat = Desc.trim(cat)
         lic = Desc.trim(lic)
 
+        // remove File: prefix
         if title.lowercased().hasPrefix("file:") {
             title = String(title[title.index(title.startIndex, offsetBy: 5)...])
         }

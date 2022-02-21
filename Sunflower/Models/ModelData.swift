@@ -2,7 +2,7 @@ import Foundation
 
 /// The main storage object which maintains the state of Sunflower
 class ModelData: ObservableObject {
-    
+
     /// The interal representation of the global description object.  This is useful for mass uploads
     var globalDesc = Desc()
     

@@ -10,11 +10,22 @@ struct MediaRowView: View {
     var body: some View {
         LazyHStack {
             ZStack(alignment: .bottomTrailing) {
-                UploadUtils.downsampleImage(uploadCandinate.path)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 55, height: 55)
-                    .cornerRadius(10)
+
+                // TODO: icon asset for non-displayable files
+                Group {
+                    if UploadUtils.isDisplayableFile(uploadCandinate.path) {
+                        UploadUtils.downsampleImage(uploadCandinate.path)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    }
+                    else {
+                        Rectangle()
+                            .foregroundColor(.blue)
+                    }
+                }
+                .frame(width: 55, height: 55)
+                .cornerRadius(10)
+
 
                 switch uploadCandinate.uploadStatus {
                 case .standby:
@@ -24,7 +35,6 @@ struct MediaRowView: View {
                 case .error:
                     makeStatusIcon("x.circle.fill", .red)
                 }
-
             }
             
             Text(uploadCandinate.path.lastPathComponent)
@@ -51,11 +61,14 @@ struct MediaRowView: View {
 
 struct MediaRowView_Previews: PreviewProvider {
 
+
     /// Convenience function.  Creates an `UploadCandinate` with the specified upload status.
-    /// - Parameter status: The `Status` to create the `UploadCandinate` with
+    /// - Parameters:
+    ///   - status: The `Status` to create the `UploadCandinate` with
+    ///   - path: The path to an example file to upload
     /// - Returns: The newly created `UploadCandinate`
-    static private func makeUploadCandinate(_ status: Status = .standby) -> UploadCandinate {
-        let c = UploadCandinate(URL(string: "file:///Example.jpg")!)
+    static private func makeUploadCandinate(_ status: Status = .standby, path: String = "file:///Example.jpg") -> UploadCandinate {
+        let c = UploadCandinate(URL(string: path)!)
         c.uploadStatus = status
 
         return c
@@ -63,6 +76,7 @@ struct MediaRowView_Previews: PreviewProvider {
     
     static var previews: some View {
         Group {
+            MediaRowView(uploadCandinate: makeUploadCandinate(path: "file:///Example.mp3"))
             MediaRowView(uploadCandinate: makeUploadCandinate())
             MediaRowView(uploadCandinate: makeUploadCandinate(.success))
             MediaRowView(uploadCandinate: makeUploadCandinate(.error))
