@@ -16,7 +16,7 @@ class Desc: ObservableObject {
     @Published var date = ""
     
     /// The text to put in the `author` parameter of the `Information` template on the file description page.
-    @Published var author = "~~~"
+    @Published var author = ""
     
     /// The text to put in the `permission` parameter of the `Information` template on the file description page.
     @Published var permission = ""
@@ -33,6 +33,18 @@ class Desc: ObservableObject {
     /// - Returns: A copy of `s` with leading & trailing whitespace removed
     private static func trim(_ s: String) -> String {
         s.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    /// Convenience method, clear this form
+    func clear() {
+        title = ""
+        desc = ""
+        source = ""
+        date = ""
+        author = ""
+        permission = ""
+        cat = ""
+        lic = ""
     }
 
     /// Formats the fields of this object in preparation for uploading.

@@ -16,7 +16,7 @@ import SwiftUI
                 }
         }
         .commands {
-            SunflowerCommands()
+            SunflowerCommands(modelData: modelData)
         }
     }
 }

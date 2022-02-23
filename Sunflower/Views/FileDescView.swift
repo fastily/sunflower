@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct FileDescView: View {
-    //@Environment(\.presentationMode) var presentation
     
     @EnvironmentObject var modelData: ModelData
     
@@ -15,38 +14,27 @@ struct FileDescView: View {
         
         if !wasDeleted {
             ScrollView {
-            UploadFormView(d: uploadCandinate.details)
-                .navigationTitle("Details for \(uploadCandinate.path.lastPathComponent)")
-                .padding(30)
-                .sheet(isPresented: $showFileSheet) {
-                    FileViewerView(uploadCandinate: uploadCandinate)
-                }
-                .toolbar {
-
-                    // button - view file
-                    Button(action: {
-                        if UploadUtils.isDisplayableFile(uploadCandinate.path) {
-                            showFileSheet = true
-                        }
-                        else {
-                            NSWorkspace.shared.activateFileViewerSelecting([uploadCandinate.path])
-                        }
-                    }) {
-                        Label("View Image", systemImage: "eye")
+                UploadFormView(d: uploadCandinate.details)
+                    .navigationTitle("Details for \(uploadCandinate.path.lastPathComponent)")
+                    .padding(30)
+                    .sheet(isPresented: $showFileSheet) {
+                        FileViewerView(uploadCandinate: uploadCandinate)
                     }
-                    .help("View file")
-
-                    // button - unstage file from upload
-                    Button(action: {
-                        modelData.removeFile(uploadCandinate.path)
-                        wasDeleted = true
-                        //self.presentation.wrappedValue.dismiss()
-                    }) {
-                        Label("Remove", systemImage: "trash")
+                    .toolbar {
+                        
+                        // button - view file
+                        Button(action: {
+                            if UploadUtils.isDisplayableFile(uploadCandinate.path) {
+                                showFileSheet = true
+                            }
+                            else {
+                                NSWorkspace.shared.activateFileViewerSelecting([uploadCandinate.path])
+                            }
+                        }) {
+                            Label("View Image", systemImage: "eye")
+                        }
+                        .help("View file")
                     }
-                    .help("Remove this file from the upload")
-
-                }
             }
             .frame(minHeight:600)
         }

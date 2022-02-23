@@ -7,10 +7,10 @@ import UniformTypeIdentifiers
 
 /// General Wiki-interfacing functionality and config data
 class Wiki {
-    
+
     /// Default request parameters which will always be sent to the API
     private static let defaultParams = ["format": "json", "formatversion" : "2"]
-    
+
     /// The maximum size (in bytes) of each chunk to upload when uploading files
     private static let chunkSize = 1024 * 1024 * 1
     
@@ -32,8 +32,7 @@ class Wiki {
     
     /// Regex matching the extensions of files which can be uploaded
     var extRegex = ""
-    
-    
+
     /// Initializer, creates a new Wiki object
     init() {
         Task {
@@ -59,14 +58,27 @@ class Wiki {
             if result["result"].string == "Success" {
                 self.username = result["lgusername"].string!
                 csrfToken = await fetchToken()
-                
-                print(csrfToken)
+
+                log.info("obtained csrf token: \(self.csrfToken)")
                 
                 return true
             }
         }
         
         return false
+    }
+
+    /// Logs the currently logged in user out and removes cookies/tokens.  PRECONDITION: this Wiki object has been logged in.
+    /// - Returns: `true` if logging out was successful.
+    func logout() async -> Bool {
+        if await postAction("logout", ["token": csrfToken]) == nil {
+            return false
+        }
+
+        username = ""
+        csrfToken = "\\+"
+
+        return true
     }
     
     

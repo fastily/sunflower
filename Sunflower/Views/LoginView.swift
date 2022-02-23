@@ -34,6 +34,7 @@ struct LoginView: View {
                 SecureField("Password", text: $password)
             }
             .padding(.bottom, 20)
+            .padding(.horizontal, 20)
 
             HStack {
                 Button("Submit") {
