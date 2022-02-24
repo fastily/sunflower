@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 /// Represents the user login page.
 struct LoginView: View {
 

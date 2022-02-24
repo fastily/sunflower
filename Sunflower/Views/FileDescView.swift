@@ -1,44 +1,46 @@
 import SwiftUI
 
+
+/// Represents a file description page form
 struct FileDescView: View {
     
+    /// The shared model data object
     @EnvironmentObject var modelData: ModelData
     
+    /// Indicates if the sheet for previewing the file is open.  Currently restricted to jpg/png files
     @State private var showFileSheet = false
     
-    @State private var wasDeleted = false
-    
+    /// The `UploadCandinate` associated with this file description form
     var uploadCandinate: UploadCandinate
     
+    /// The main body of the View
     var body: some View {
-        
-        if !wasDeleted {
-            ScrollView {
-                UploadFormView(d: uploadCandinate.details)
-                    .navigationTitle("Details for \(uploadCandinate.path.lastPathComponent)")
-                    .padding(30)
-                    .sheet(isPresented: $showFileSheet) {
-                        FileViewerView(uploadCandinate: uploadCandinate)
-                    }
-                    .toolbar {
-                        
-                        // button - view file
-                        Button(action: {
-                            if UploadUtils.isDisplayableFile(uploadCandinate.path) {
-                                showFileSheet = true
-                            }
-                            else {
-                                NSWorkspace.shared.activateFileViewerSelecting([uploadCandinate.path])
-                            }
-                        }) {
-                            Label("View Image", systemImage: "eye")
+        ScrollView {
+            
+            UploadFormView(d: uploadCandinate.details)
+                .navigationTitle("Details for \(uploadCandinate.path.lastPathComponent)")
+                .padding(30)
+                .sheet(isPresented: $showFileSheet) {
+                    FileViewerView(uploadCandinate: uploadCandinate)
+                }
+                .toolbar {
+                    
+                    // button - view file
+                    Button(action: {
+                        if UploadUtils.isDisplayableFile(uploadCandinate.path) {
+                            showFileSheet = true
                         }
-                        .help("View file")
+                        else {
+                            NSWorkspace.shared.activateFileViewerSelecting([uploadCandinate.path])
+                        }
+                    }) {
+                        Label("View Image", systemImage: "eye")
                     }
-            }
-            .frame(minHeight:600)
+                    .help("View file")
+                }
+            
         }
-        
+        .frame(minHeight:600)
     }
 }
 

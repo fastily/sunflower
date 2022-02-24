@@ -24,6 +24,7 @@ struct MediaListView: View {
     /// The message to show to the user if there was a preflight check error
     @State private var preflightErrorMessage = ""
 
+    /// Flag indicating if nothing is selected in the sidebar.  This controls the default message shown in the detail view.
     @State private var nothingIsSelected = true
 
     /// The main body of the View
@@ -35,9 +36,9 @@ struct MediaListView: View {
                     Section(header: Text("Files to Upload")) {
 
                         ForEach(modelData.paths, id: \.self) { path in
-                            NavigationLink(destination: FileDescView(uploadCandinate: modelData.uploadCandinates[path]!)) {
+                            NavigationLink(destination: { FileDescView(uploadCandinate: modelData.uploadCandinates[path]!) }, label: {
                                 MediaRowView(uploadCandinate: modelData.uploadCandinates[path]!)
-                            }
+                            })
                             .tag(path)
                         }
 
@@ -51,18 +52,8 @@ struct MediaListView: View {
                         nothingIsSelected = true
                     }
                 }
-                .listStyle(SidebarListStyle())
-
-                //                .id(UUID())
-
                 .frame(minWidth: 350)
                 .toolbar {
-
-//                    Button(action: {
-//                        print(selectedMedia)
-//                    }) {
-//                        Label("Add", systemImage: "pencil")
-//                    }
 
                     // button - add file dialog
                     Button(action: {
@@ -75,7 +66,7 @@ struct MediaListView: View {
                                 modelData.addFile(u)
                             }
 
-                            print(modelData.paths)
+//                            print(modelData.paths)
                         }
                     }) {
                         Label("Add", systemImage: "plus.app")
@@ -111,7 +102,6 @@ struct MediaListView: View {
                                     await UploadUtils.performUploads(modelData)
                                     showingUploadInProgress = false
                                 }
-                                print("ok - would upload")
                             }
 
                         }) {

@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 /// Main driver, entry point
 @main struct SunflowerApp: App {
 

@@ -12,11 +12,10 @@ class Wiki {
     private static let defaultParams = ["format": "json", "formatversion" : "2"]
 
     /// The maximum size (in bytes) of each chunk to upload when uploading files
-    private static let chunkSize = 1024 * 1024 * 1
+    private static let chunkSize = 1024 * 1024 * 4
     
     /// The base API endpoint to target
-    //    private static let endpoint = "https://commons.wikimedia.org/w/api.php"
-    private static let endpoint = "https://en.wikipedia.org/w/api.php"
+    private static let endpoint = "https://commons.wikimedia.org/w/api.php"
     
     /// The logger associated with this Wiki
     private let log = Logger()
@@ -155,10 +154,10 @@ class Wiki {
         
         // close local file descriptor & unstash on server
         try? f.close()
-        if let jo = await postAction("upload", ["filename": title, "text": desc, "comment": "test 12345", "filekey": filekey, "ignorewarnings": "1"]), let result = jo["upload", "result"].string { //Uploaded with Sunflower \(Bundle.main.infoDictionary!["CFBundleShortVersionString"]!)
+        if let jo = await postAction("upload", ["filename": title, "text": desc, "comment": "Uploaded with [[Commons:Sunflower|Sunflower]] (\(Bundle.main.infoDictionary!["CFBundleShortVersionString"]!))", "filekey": filekey, "ignorewarnings": "1"]), let result = jo["upload", "result"].string {
             return result == "Success"
         }
-        
+
         return false
     }
     

@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 /// The view that gets shown in a sheet when the user starts an upload
 struct UploadInProgressView: View {
     

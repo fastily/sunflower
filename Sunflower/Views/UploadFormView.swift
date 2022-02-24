@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 /// Represents an upload form.  Doesn't do much by itself, should embed this in another View.
 struct UploadFormView: View {
 
