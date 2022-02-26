@@ -65,8 +65,6 @@ struct MediaListView: View {
                             for u in panel.urls {
                                 modelData.addFile(u)
                             }
-
-//                            print(modelData.paths)
                         }
                     }) {
                         Label("Add", systemImage: "plus.app")

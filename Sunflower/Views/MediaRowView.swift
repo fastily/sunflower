@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// Represents the a file for upload in the List sidebar.  Can show the status of whether the file has been uploaded or not.
 struct MediaRowView: View {
@@ -11,21 +12,22 @@ struct MediaRowView: View {
         LazyHStack {
             ZStack(alignment: .bottomTrailing) {
 
-                // TODO: icon asset for non-displayable files
-                Group {
-                    if UploadUtils.isDisplayableFile(uploadCandinate.path) {
-                        UploadUtils.downsampleImage(uploadCandinate.path)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
+                if UploadUtils.isDisplayableFile(uploadCandinate.path) {
+                    UploadUtils.downsampleImage(uploadCandinate.path)
+                        .mediaRowModifier()
+                }
+                else {
+                    let ext = UTType(filenameExtension: uploadCandinate.path.pathExtension)!
+
+                    if ext.conforms(to: .audiovisualContent) || ext.conforms(to: .audio) {
+                        Image("sunflower-media")
+                            .mediaRowModifier()
                     }
                     else {
-                        Rectangle()
-                            .foregroundColor(.blue)
+                        Image("sunflower-generic")
+                            .mediaRowModifier()
                     }
                 }
-                .frame(width: 55, height: 55)
-                .cornerRadius(10)
-
 
                 switch uploadCandinate.uploadStatus {
                 case .standby:
@@ -43,7 +45,6 @@ struct MediaRowView: View {
         .padding()
     }
 
-
     /// Creates a status icon with the specified parameters
     /// - Parameters:
     ///   - name: The system name of the icon to use
@@ -57,6 +58,18 @@ struct MediaRowView: View {
             .clipShape(Circle())
     }
 }
+
+
+extension Image {
+    func mediaRowModifier() -> some View {
+        self
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+            .frame(width: 55, height: 55)
+            .cornerRadius(10)
+    }
+}
+
 
 
 struct MediaRowView_Previews: PreviewProvider {

@@ -6,7 +6,7 @@ import UniformTypeIdentifiers
 class UploadUtils {
     
     /// The image extensions which are supported by Sunflower for thumbnailing/previewing
-    static let displayableImgExts: Set = [UTType(filenameExtension: "jpg"), UTType(filenameExtension: "png")]
+    static let displayableImgExts: Set = [UTType(filenameExtension: "jpg")!, UTType(filenameExtension: "png")!]
     
     /// The index substring to replace with an index in global titles at upload time
     private static let indexTemplate = "{i}"
@@ -21,29 +21,19 @@ class UploadUtils {
     ///   - scale: The dpi scale to use
     /// - Returns: A downsized image, ready for displaying
     static func downsampleImage(_ imageURL: URL, to pointSize: CGSize = CGSize(width: 55, height: 55), scale: CGFloat = 1.0) -> Image {
-        
-        // Create an CGImageSource that represent an image
-        let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, imageSourceOptions) else {
-            return Image("Example")
-        }
-        
-        // Calculate the desired dimension
-        let maxDimensionInPixels = max(pointSize.width, pointSize.height) * scale
-        
-        // Perform downsampling
-        let downsampleOptions = [
+
+        let maxDimensionInPixels = max(pointSize.width, pointSize.height) * scale // Calculate the desired max dimension in pixels
+
+        if let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary), let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, [
             kCGImageSourceCreateThumbnailFromImageAlways: true,
             kCGImageSourceShouldCacheImmediately: true,
             kCGImageSourceCreateThumbnailWithTransform: true,
             kCGImageSourceThumbnailMaxPixelSize: maxDimensionInPixels
-        ] as CFDictionary
-        guard let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, downsampleOptions) else {
-            return Image("Example")
+        ] as CFDictionary) {
+            return Image(decorative: downsampledImage, scale:scale)
         }
-        
-        // Return the downsampled image as UIImage
-        return Image(decorative: downsampledImage, scale:scale)
+
+        return Image("sunflower-generic")
     }
     
     /// Check if the specified file is supported for thumbnailing.  See also - `displayableImgExts`
@@ -107,9 +97,7 @@ class UploadUtils {
         // check for illegal chars in titles
         for c in modelData.uploadCandinates.values {
             c.details.formatForUpload()
-            
-            //            print("\(c.details.title) - \(c.details.title.isEmpty) - \(hasGlobalTitle) - \(titleIsBad(c.details.title, hasGlobalTitle))")
-            
+
             if titleIsBad(c.details.title, hasGlobalTitle) {
                 return "\"\(c.details.title)\" is not a valid file title for Commons"
             }
