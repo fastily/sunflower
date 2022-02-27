@@ -25,12 +25,8 @@ class UploadUtils {
         let maxDimensionInPixels = max(pointSize.width, pointSize.height) * scale // Calculate the desired max dimension in pixels
 
         if let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary), let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, [
-            kCGImageSourceCreateThumbnailFromImageAlways: true,
-            kCGImageSourceShouldCacheImmediately: true,
-            kCGImageSourceCreateThumbnailWithTransform: true,
-            kCGImageSourceThumbnailMaxPixelSize: maxDimensionInPixels
-        ] as CFDictionary) {
-            return Image(decorative: downsampledImage, scale:scale)
+            kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceShouldCacheImmediately: true, kCGImageSourceCreateThumbnailWithTransform: true, kCGImageSourceThumbnailMaxPixelSize: maxDimensionInPixels] as CFDictionary) {
+            return Image(decorative: downsampledImage, scale: scale)
         }
 
         return Image("sunflower-generic")
@@ -107,24 +103,27 @@ class UploadUtils {
     }
     
     
+
     /// Performs an upload with the specified `UploadCandinate` objects in `modelData`.  CAVEAT: Does not perform any sanity checks, put all sanity checking code in `preflightCheck()`.
-    /// - Parameter modelData: The `ModelData` object containing hte `UploadCandinate` objects to upload
-    static func performUploads(_ modelData: ModelData) async {
+    /// - Parameters:
+    ///   - modelData: The `ModelData` object containing hte `UploadCandinate` objects to upload
+    ///   - filesToUpload: The list of files to upload
+    static func performUploads(_ modelData: ModelData, _ filesToUpload: [URL]) async {
         
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd"
         let today = df.string(from: Date())
-        
+
         var globalTitleCnt = 0
         var title = ""
-        
-        for (i, f) in modelData.paths.enumerated() {
+
+        for (i, f) in filesToUpload.enumerated() {
             let currUploadCandinate = modelData.uploadCandinates[f]!
             
             // reset progress bar for the current file being uploaded
             await MainActor.run {
                 modelData.uploadState.currentFileName = f.lastPathComponent
-                modelData.uploadState.totalProgress = Double(i)/Double(modelData.paths.count)
+                modelData.uploadState.totalProgress = Double(i)/Double(filesToUpload.count)
                 modelData.uploadState.currFileProgress = 0.0
             }
             

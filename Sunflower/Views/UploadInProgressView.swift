@@ -20,7 +20,7 @@ struct UploadInProgressView: View {
             Text("Uploading '\(modelData.uploadState.currentFileName)'")
                 .padding(.bottom)
             
-            ProgressView(value:modelData.uploadState.totalProgress)
+            ProgressView(value: modelData.uploadState.totalProgress)
             Text("Overall Progress")
                 .padding(.bottom, 25)
             

@@ -21,6 +21,9 @@ class ModelData: ObservableObject {
     /// Tracks the current state of any ongoing upload job
     @Published var uploadState = UploadState()
 
+    /// The currently selected file (via the sidebar) to show in the detail view (file description editing interface)
+    @Published var currSelectedFile: URL?
+
     /// The currently running background upload task, if applicable.
     var currentUploadTask: Task<(), Never>?
 
@@ -36,5 +39,13 @@ class ModelData: ObservableObject {
     func removeFile(_ path: URL) {
         uploadCandinates.removeValue(forKey: path)
         paths.remove(at: paths.firstIndex(of: path)!)
+    }
+
+    /// Removes all files tracked by this `ModelData`.   Useful for allowing the user to clean up the UI post-upload.
+    func removeAllFiles() {
+        currSelectedFile = nil
+
+        paths.removeAll()
+        uploadCandinates.removeAll()
     }
 }

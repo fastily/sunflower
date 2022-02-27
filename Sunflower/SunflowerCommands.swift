@@ -26,8 +26,7 @@ struct SunflowerCommands: Commands {
             }
 
             Button("Remove All Files") {
-                modelData.paths.removeAll()
-                modelData.uploadCandinates.removeAll()
+                modelData.removeAllFiles()
             }
 
         }

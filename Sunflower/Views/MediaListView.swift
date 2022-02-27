@@ -5,9 +5,6 @@ struct MediaListView: View {
     
     /// The globally shared model data between views
     @EnvironmentObject var modelData: ModelData
-    
-    /// The currently selected file (via the sidebar) to show the file description editing interface
-    @State private var selectedMedia: URL?
 
     /// Flag indicating if the login form is currently being shown to the user
     @State private var showingLogin = false
@@ -24,21 +21,17 @@ struct MediaListView: View {
     /// The message to show to the user if there was a preflight check error
     @State private var preflightErrorMessage = ""
 
-    /// Flag indicating if nothing is selected in the sidebar.  This controls the default message shown in the detail view.
-    @State private var nothingIsSelected = true
-
     /// The main body of the View
     var body: some View {
         NavigationView {
 
-            ZStack {
-                List(selection: $selectedMedia) {
+            List(selection: $modelData.currSelectedFile) {
                     Section(header: Text("Files to Upload")) {
 
                         ForEach(modelData.paths, id: \.self) { path in
-                            NavigationLink(destination: { FileDescView(uploadCandinate: modelData.uploadCandinates[path]!) }, label: {
+                            NavigationLink(destination: DetailView()) {
                                 MediaRowView(uploadCandinate: modelData.uploadCandinates[path]!)
-                            })
+                            }
                             .tag(path)
                         }
 
@@ -46,12 +39,12 @@ struct MediaListView: View {
                     .collapsible(false)
                 }
                 .onDeleteCommand {
-                    if let selection = selectedMedia {
+                    if let selection = modelData.currSelectedFile {
                         modelData.removeFile(selection)
-                        selectedMedia = nil
-                        nothingIsSelected = true
+                        modelData.currSelectedFile = nil
                     }
                 }
+                .animation(.default, value: modelData.paths)
                 .frame(minWidth: 350)
                 .toolbar {
 
@@ -63,7 +56,9 @@ struct MediaListView: View {
 
                         if panel.runModal() == .OK {
                             for u in panel.urls {
-                                modelData.addFile(u)
+                                if !modelData.paths.contains(u) {
+                                    modelData.addFile(u)
+                                }
                             }
                         }
                     }) {
@@ -93,11 +88,16 @@ struct MediaListView: View {
                                 showingPreflightCheckError = true
                             }
                             else {
+                                let filesToUpload = modelData.paths.filter { modelData.uploadCandinates[$0]!.uploadStatus != .success }
+                                if filesToUpload.isEmpty {
+                                    return
+                                }
+
                                 modelData.uploadState.reset()
                                 showingUploadInProgress = true
 
                                 modelData.currentUploadTask = Task {
-                                    await UploadUtils.performUploads(modelData)
+                                    await UploadUtils.performUploads(modelData, filesToUpload)
                                     showingUploadInProgress = false
                                 }
                             }
@@ -128,21 +128,28 @@ struct MediaListView: View {
                     }
                 }
 
-                NavigationLink(destination: NothingSelectedView(), isActive: $nothingIsSelected) { EmptyView() }.opacity(0)
-            }
+                Text("Click [+] to add media")
         }
         .frame(minWidth: 1000, minHeight: 600)
     }
 }
 
-fileprivate struct NothingSelectedView: View {
+
+/// Represents the detail view to the right of the sidebar
+fileprivate struct DetailView: View {
 
     /// The globally shared model data between views
     @EnvironmentObject var modelData: ModelData
 
     /// The main body of the View
     var body: some View {
-        Text(modelData.paths.isEmpty ? "Click [+] to add media": "Click a file in the sidebar to edit its description")
+
+        if let selected = modelData.currSelectedFile {
+            FileDescView(uploadCandinate: modelData.uploadCandinates[selected]!)
+        }
+        else {
+            Text(modelData.paths.isEmpty ? "Click [+] to add media": "Click a file in the sidebar to edit its description")
+        }
     }
 }
 

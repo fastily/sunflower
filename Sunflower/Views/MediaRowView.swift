@@ -61,6 +61,9 @@ struct MediaRowView: View {
 
 
 extension Image {
+
+    /// Shared modifier settings for resizing a sidebar row.  Here's to hoping that SwiftUI allows using `Image` with `ViewModifier` in the future
+    /// - Returns: The Image with appropriate settings for the sidebar row.
     func mediaRowModifier() -> some View {
         self
             .resizable()
@@ -71,9 +74,7 @@ extension Image {
 }
 
 
-
 struct MediaRowView_Previews: PreviewProvider {
-
 
     /// Convenience function.  Creates an `UploadCandinate` with the specified upload status.
     /// - Parameters:

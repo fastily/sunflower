@@ -5,7 +5,8 @@ import SwiftUI
 
     /// The globally shared model data between views
     @StateObject private var modelData = ModelData()
-    
+
+    /// The main body of the Scene
     var body: some Scene {
         WindowGroup {
             ContentView()
