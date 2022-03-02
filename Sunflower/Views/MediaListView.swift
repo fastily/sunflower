@@ -5,130 +5,130 @@ struct MediaListView: View {
     
     /// The globally shared model data between views
     @EnvironmentObject var modelData: ModelData
-
+    
     /// Flag indicating if the login form is currently being shown to the user
     @State private var showingLogin = false
-
+    
     /// Flag indicating if the global description form is currently being shown to the user
     @State private var showingGlobalDesc = false
-
+    
     /// Flag indicating if the upload in progress screen is currently being shown to the user
     @State private var showingUploadInProgress = false
-
+    
     /// Flag indicating if the preflight check error alert is currently being shown to the user
     @State private var showingPreflightCheckError = false
-
+    
     /// The message to show to the user if there was a preflight check error
     @State private var preflightErrorMessage = ""
-
+    
     /// The main body of the View
     var body: some View {
         NavigationView {
-
+            
             List(selection: $modelData.currSelectedFile) {
-                    Section(header: Text("Files to Upload")) {
-
-                        ForEach(modelData.paths, id: \.self) { path in
-                            NavigationLink(destination: DetailView()) {
-                                MediaRowView(uploadCandinate: modelData.uploadCandinates[path]!)
-                            }
-                            .tag(path)
+                Section(header: Text("Files to Upload")) {
+                    
+                    ForEach(modelData.paths, id: \.self) { path in
+                        NavigationLink(destination: DetailView()) {
+                            MediaRowView(uploadCandinate: modelData.uploadCandinates[path]!)
                         }
-
+                        .tag(path)
                     }
-                    .collapsible(false)
+                    
                 }
-                .onDeleteCommand {
-                    if let selection = modelData.currSelectedFile {
-                        modelData.removeFile(selection)
-                        modelData.currSelectedFile = nil
+                .collapsible(false)
+            }
+            .onDeleteCommand {
+                if let selection = modelData.currSelectedFile {
+                    modelData.removeFile(selection)
+                    modelData.currSelectedFile = nil
+                }
+            }
+            .animation(.default, value: modelData.paths)
+            .frame(minWidth: 350)
+            .toolbar {
+                
+                // button - add file dialog
+                Button(action: {
+                    let panel = NSOpenPanel()
+                    panel.allowsMultipleSelection = true
+                    panel.allowedContentTypes = modelData.wiki.valid_file_exts
+                    
+                    if panel.runModal() == .OK {
+                        for u in panel.urls {
+                            if !modelData.paths.contains(u) {
+                                modelData.addFile(u)
+                            }
+                        }
                     }
+                }) {
+                    Label("Add", systemImage: "plus.app")
                 }
-                .animation(.default, value: modelData.paths)
-                .frame(minWidth: 350)
-                .toolbar {
-
-                    // button - add file dialog
+                .help("Choose files to upload")
+                
+                // button - show global config sheet
+                Button(action: {
+                    showingGlobalDesc = true
+                }) {
+                    Label("Edit Global Config", systemImage: "doc.badge.gearshape")
+                }
+                .help("Edit global upload config")
+                .sheet(isPresented: $showingGlobalDesc) {
+                    GlobalDescView()
+                }
+                
+                Spacer()
+                
+                if modelData.isLoggedIn {
+                    // button - start upload
                     Button(action: {
-                        let panel = NSOpenPanel()
-                        panel.allowsMultipleSelection = true
-                        panel.allowedContentTypes = modelData.wiki.valid_file_exts
-
-                        if panel.runModal() == .OK {
-                            for u in panel.urls {
-                                if !modelData.paths.contains(u) {
-                                    modelData.addFile(u)
-                                }
+                        // TODO: sanity check titles
+                        if let errMsg = UploadUtils.preflightCheck(modelData) {
+                            preflightErrorMessage = "\(errMsg).  Please fix this before proceeding."
+                            showingPreflightCheckError = true
+                        }
+                        else {
+                            let filesToUpload = modelData.paths.filter { modelData.uploadCandinates[$0]!.uploadStatus != .success }
+                            if filesToUpload.isEmpty {
+                                return
+                            }
+                            
+                            modelData.uploadState.reset()
+                            showingUploadInProgress = true
+                            
+                            modelData.currentUploadTask = Task {
+                                await UploadUtils.performUploads(modelData, filesToUpload)
+                                showingUploadInProgress = false
                             }
                         }
+                        
                     }) {
-                        Label("Add", systemImage: "plus.app")
+                        Label("Upload", systemImage: "play.fill")
                     }
-                    .help("Choose files to upload")
-
-                    // button - show global config sheet
-                    Button(action: {
-                        showingGlobalDesc = true
-                    }) {
-                        Label("Edit Global Config", systemImage: "doc.badge.gearshape")
+                    .disabled(modelData.paths.isEmpty)
+                    .sheet(isPresented: $showingUploadInProgress) {
+                        UploadInProgressView()
                     }
-                    .help("Edit global upload config")
-                    .sheet(isPresented: $showingGlobalDesc) {
-                        GlobalDescView()
+                    .alert("Error", isPresented: $showingPreflightCheckError, actions: {}) {
+                        Text(preflightErrorMessage)
                     }
-
-                    Spacer()
-
-                    if modelData.isLoggedIn {
-                        // button - start upload
-                        Button(action: {
-                            // TODO: sanity check titles
-                            if let errMsg = UploadUtils.preflightCheck(modelData) {
-                                preflightErrorMessage = "\(errMsg).  Please fix this before proceeding."
-                                showingPreflightCheckError = true
-                            }
-                            else {
-                                let filesToUpload = modelData.paths.filter { modelData.uploadCandinates[$0]!.uploadStatus != .success }
-                                if filesToUpload.isEmpty {
-                                    return
-                                }
-
-                                modelData.uploadState.reset()
-                                showingUploadInProgress = true
-
-                                modelData.currentUploadTask = Task {
-                                    await UploadUtils.performUploads(modelData, filesToUpload)
-                                    showingUploadInProgress = false
-                                }
-                            }
-
-                        }) {
-                            Label("Upload", systemImage: "play.fill")
-                        }
-                        .disabled(modelData.paths.isEmpty)
-                        .sheet(isPresented: $showingUploadInProgress) {
-                            UploadInProgressView()
-                        }
-                        .alert("Error", isPresented: $showingPreflightCheckError, actions: {}) {
-                            Text(preflightErrorMessage)
-                        }
-                        .help("Peform upload")
-                    }
-                    else {
-                        // button - login
-                        Button(action: {
-                            showingLogin = true
-                        }) {
-                            Label("Login", systemImage: "person.crop.circle.badge.questionmark")
-                        }
-                        .sheet(isPresented: $showingLogin) {
-                            LoginView()
-                        }
-                        .help("Login to your Wikimedia account")
-                    }
+                    .help("Peform upload")
                 }
-
-                Text("Click [+] to add media")
+                else {
+                    // button - login
+                    Button(action: {
+                        showingLogin = true
+                    }) {
+                        Label("Login", systemImage: "person.crop.circle.badge.questionmark")
+                    }
+                    .sheet(isPresented: $showingLogin) {
+                        LoginView()
+                    }
+                    .help("Login to your Wikimedia account")
+                }
+            }
+            
+            Text("Click [+] to add media")
         }
         .frame(minWidth: 1000, minHeight: 600)
     }
@@ -137,13 +137,13 @@ struct MediaListView: View {
 
 /// Represents the detail view to the right of the sidebar
 fileprivate struct DetailView: View {
-
+    
     /// The globally shared model data between views
     @EnvironmentObject var modelData: ModelData
-
+    
     /// The main body of the View
     var body: some View {
-
+        
         if let selected = modelData.currSelectedFile {
             FileDescView(uploadCandinate: modelData.uploadCandinates[selected]!)
         }
@@ -155,7 +155,7 @@ fileprivate struct DetailView: View {
 
 
 struct MediaListView_Previews: PreviewProvider {
-
+    
     /// Convenience method, creates an example `ModelData` for previewing
     /// - Returns: The newly created `ModelData` object for previewing
     private static func makeEnvObj() -> ModelData {

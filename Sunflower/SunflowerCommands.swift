@@ -25,8 +25,14 @@ struct SunflowerCommands: Commands {
                 modelData.globalDesc.clear()
             }
 
+            Divider()
+
             Button("Remove All Files") {
                 modelData.removeAllFiles()
+            }
+
+            Button("Remove All Uploaded Files") {
+                modelData.uploadCandinates.filter { $1.uploadStatus == .success }.keys.forEach { modelData.removeFile($0) }
             }
 
         }

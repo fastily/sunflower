@@ -1,33 +1,33 @@
 import Foundation
 
 /// Represents a file description page for a file to be uploaded
-class Desc: ObservableObject {
+struct Desc: Equatable {
 
     /// The title to upload the image with.  Do not include `File:` prefix.
-    @Published var title = ""
-    
-    /// The text to put in the `description` parameter of the `Information` template on the file description page.
-    @Published var desc = ""
-    
-    /// The text to put in the `source` parameter of the `Information` template on the file description page.
-    @Published var source = ""
-    
-    /// The text to put in the `date` parameter of the `Information` template on the file description page.
-    @Published var date = ""
-    
-    /// The text to put in the `author` parameter of the `Information` template on the file description page.
-    @Published var author = ""
-    
-    /// The text to put in the `permission` parameter of the `Information` template on the file description page.
-    @Published var permission = ""
-    
-    /// The text to use as the categories on the description page
-    @Published var cat = ""
-    
-    /// The text to use in the license section of the file decription page
-    @Published var lic = ""
+    var title = ""
 
-    
+    /// The text to put in the `description` parameter of the `Information` template on the file description page.
+    var desc = ""
+
+    /// The text to put in the `source` parameter of the `Information` template on the file description page.
+    var source = ""
+
+    /// The text to put in the `date` parameter of the `Information` template on the file description page.
+    var date = ""
+
+    /// The text to put in the `author` parameter of the `Information` template on the file description page.
+    var author = ""
+
+    /// The text to put in the `permission` parameter of the `Information` template on the file description page.
+    var permission = ""
+
+    /// The text to use as the categories on the description page
+    var cat = ""
+
+    /// The text to use in the license section of the file decription page
+    var lic = ""
+
+
     /// Convenience method, removes leading & trailing whitespace for the input String
     /// - Parameter s: The String to trim
     /// - Returns: A copy of `s` with leading & trailing whitespace removed
@@ -36,7 +36,7 @@ class Desc: ObservableObject {
     }
 
     /// Convenience method, clear this form
-    func clear() {
+    mutating func clear() {
         title = ""
         desc = ""
         source = ""
@@ -48,7 +48,7 @@ class Desc: ObservableObject {
     }
 
     /// Formats the fields of this object in preparation for uploading.
-    func formatForUpload() {
+    mutating func formatForUpload() {
         // remove leading/trailing whitespace
         title = Desc.trim(title)
         desc = Desc.trim(desc)
@@ -63,6 +63,6 @@ class Desc: ObservableObject {
         if title.lowercased().hasPrefix("file:") {
             title = String(title[title.index(title.startIndex, offsetBy: 5)...])
         }
-        
+
     }
 }

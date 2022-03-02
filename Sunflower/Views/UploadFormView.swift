@@ -2,13 +2,22 @@ import SwiftUI
 
 /// Represents an upload form.  Doesn't do much by itself, should embed this in another View.
 struct UploadFormView: View {
-
+    
     /// The `Desc` object backing the fields in this View
-    @ObservedObject var d: Desc
-
-    /// Flag inidicating if the title field should be shown.
-    var showTitleField = true
-
+    @State private var d: Desc
+    
+    /// The function that gets called whenever the user edits the text of this form.  Should be used to save the value of the form fields.
+    private var saveResult: (Desc) -> ()
+    
+    /// Initializer, creates a new `UploadFormView`.
+    /// - Parameters:
+    ///   - d: The `Desc` to populate this form's fields with
+    ///   - saveResult: The function to call whenever the user edits the text of this form.
+    init(_ d: Desc, _ saveResult: @escaping (Desc) -> ()) {
+        self.d = d
+        self.saveResult = saveResult
+    }
+    
     /// The main body of the View
     var body: some View {
         
@@ -56,9 +65,11 @@ struct UploadFormView: View {
                     .padding(.bottom)
             }
         }
-        
+        .onChange(of: d) { newVal in
+            saveResult(newVal)
+        }
     }
-
+    
     /// Convenience function, creates a section header with the specified `String`.
     /// - Parameter s: The `String` to use for the section header
     /// - Returns: The section header
@@ -69,7 +80,7 @@ struct UploadFormView: View {
 
 struct UploadFormView_Previews: PreviewProvider {
     static var previews: some View {
-        UploadFormView(d: Desc())
+        UploadFormView(Desc(), { _ in })
             .frame(minWidth: 900, minHeight: 650)
         
     }

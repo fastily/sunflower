@@ -7,7 +7,7 @@ class UploadCandinate: ObservableObject {
     @Published var uploadStatus = Status.standby
     
     ///  The file description object associated with this `UploadCandinate`
-    let details = Desc()
+    var details = Desc()
     
     /// The path to the file to upload
     let path: URL

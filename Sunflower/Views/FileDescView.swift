@@ -17,27 +17,29 @@ struct FileDescView: View {
     var body: some View {
         ScrollView {
             
-            UploadFormView(d: uploadCandinate.details)
-                .navigationTitle("Details for \(uploadCandinate.path.lastPathComponent)")
-                .padding(30)
-                .sheet(isPresented: $showFileSheet) {
-                    FileViewerView(uploadCandinate: uploadCandinate)
-                }
-                .toolbar {
-                    
-                    // button - view file
-                    Button(action: {
-                        if UploadUtils.isDisplayableFile(uploadCandinate.path) {
-                            showFileSheet = true
-                        }
-                        else {
-                            NSWorkspace.shared.activateFileViewerSelecting([uploadCandinate.path])
-                        }
-                    }) {
-                        Label("View Image", systemImage: "eye")
+            UploadFormView(uploadCandinate.details) {
+                uploadCandinate.details = $0
+            }
+            .navigationTitle("Details for \(uploadCandinate.path.lastPathComponent)")
+            .padding(30)
+            .sheet(isPresented: $showFileSheet) {
+                FileViewerView(uploadCandinate: uploadCandinate)
+            }
+            .toolbar {
+                
+                // button - view file
+                Button(action: {
+                    if UploadUtils.isDisplayableFile(uploadCandinate.path) {
+                        showFileSheet = true
                     }
-                    .help("View file")
+                    else {
+                        NSWorkspace.shared.activateFileViewerSelecting([uploadCandinate.path])
+                    }
+                }) {
+                    Label("View Image", systemImage: "eye")
                 }
+                .help("View file")
+            }
             
         }
         .frame(minHeight:600)

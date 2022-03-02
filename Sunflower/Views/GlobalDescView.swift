@@ -13,8 +13,10 @@ struct GlobalDescView: View {
     var body: some View {
         
         ScrollView {
-            UploadFormView(d: modelData.globalDesc, showTitleField: false)
-                .padding()
+            UploadFormView(modelData.globalDesc) {
+                modelData.globalDesc = $0
+            }
+            .padding()
             
             Button("Done") {
                 presentationMode.wrappedValue.dismiss()
