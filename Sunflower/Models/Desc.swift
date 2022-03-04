@@ -27,14 +27,6 @@ struct Desc: Equatable {
     /// The text to use in the license section of the file decription page
     var lic = ""
 
-
-    /// Convenience method, removes leading & trailing whitespace for the input String
-    /// - Parameter s: The String to trim
-    /// - Returns: A copy of `s` with leading & trailing whitespace removed
-    private static func trim(_ s: String) -> String {
-        s.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
     /// Convenience method, clear this form
     mutating func clear() {
         title = ""
@@ -64,5 +56,25 @@ struct Desc: Equatable {
             title = String(title[title.index(title.startIndex, offsetBy: 5)...])
         }
 
+        // MediaWiki does not allow tabs
+        desc = Desc.stripTabs(desc)
+        cat = Desc.stripTabs(cat)
+        lic = Desc.stripTabs(lic)
+    }
+
+
+    /// Convenience method, removes leading & trailing whitespace for the input String
+    /// - Parameter s: The String to trim
+    /// - Returns: A copy of `s` with leading & trailing whitespace removed
+    private static func trim(_ s: String) -> String {
+        s.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+
+    /// Convenience method, removes tabs from the input `String` and returns a new `String` sans tabs.
+    /// - Parameter s: The `String` to remove tabs from.
+    /// - Returns: A copy of `s`, without tabs
+    private static func stripTabs(_ s: String) -> String {
+       s.replacingOccurrences(of: "/t", with: "")
     }
 }

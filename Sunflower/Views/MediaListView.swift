@@ -12,9 +12,6 @@ struct MediaListView: View {
     /// Flag indicating if the global description form is currently being shown to the user
     @State private var showingGlobalDesc = false
     
-    /// Flag indicating if the upload in progress screen is currently being shown to the user
-    @State private var showingUploadInProgress = false
-    
     /// Flag indicating if the preflight check error alert is currently being shown to the user
     @State private var showingPreflightCheckError = false
     
@@ -82,7 +79,6 @@ struct MediaListView: View {
                 if modelData.isLoggedIn {
                     // button - start upload
                     Button(action: {
-                        // TODO: sanity check titles
                         if let errMsg = UploadUtils.preflightCheck(modelData) {
                             preflightErrorMessage = "\(errMsg).  Please fix this before proceeding."
                             showingPreflightCheckError = true
@@ -94,11 +90,11 @@ struct MediaListView: View {
                             }
                             
                             modelData.uploadState.reset()
-                            showingUploadInProgress = true
+                            modelData.uploadIsInProgress = true
                             
                             modelData.currentUploadTask = Task {
                                 await UploadUtils.performUploads(modelData, filesToUpload)
-                                showingUploadInProgress = false
+                                modelData.uploadIsInProgress = false
                             }
                         }
                         
@@ -106,7 +102,7 @@ struct MediaListView: View {
                         Label("Upload", systemImage: "play.fill")
                     }
                     .disabled(modelData.paths.isEmpty)
-                    .sheet(isPresented: $showingUploadInProgress) {
+                    .sheet(isPresented: $modelData.uploadIsInProgress) {
                         UploadInProgressView()
                     }
                     .alert("Error", isPresented: $showingPreflightCheckError, actions: {}) {

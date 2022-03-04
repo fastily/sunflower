@@ -28,14 +28,19 @@ struct SunflowerCommands: Commands {
             Divider()
 
             Button("Remove All Files") {
-                modelData.removeAllFiles()
+                if !modelData.uploadIsInProgress {
+                    modelData.currSelectedFile = nil
+                    modelData.removeAllFiles()
+                }
             }
 
-            Button("Remove All Uploaded Files") {
-                modelData.uploadCandinates.filter { $1.uploadStatus == .success }.keys.forEach { modelData.removeFile($0) }
+            Button("Remove Uploaded Files") {
+                if !modelData.uploadIsInProgress {
+                    modelData.currSelectedFile = nil
+                    modelData.uploadCandinates.filter { $1.uploadStatus == .success }.keys.forEach { modelData.removeFile($0) }
+                }
             }
 
         }
     }
-
 }

@@ -102,7 +102,6 @@ class UploadUtils {
         return nil
     }
     
-    
 
     /// Performs an upload with the specified `UploadCandinate` objects in `modelData`.  CAVEAT: Does not perform any sanity checks, put all sanity checking code in `preflightCheck()`.
     /// - Parameters:
@@ -118,6 +117,11 @@ class UploadUtils {
         var title = ""
 
         for (i, f) in filesToUpload.enumerated() {
+
+            if Task.isCancelled {
+                break
+            }
+
             let currUploadCandinate = modelData.uploadCandinates[f]!
             
             // reset progress bar for the current file being uploaded
@@ -155,7 +159,7 @@ class UploadUtils {
 [[Category:Uploaded with Sunflower]]
 \(defaultIfEmpty(currUploadCandinate.details.cat, modelData.globalDesc.cat))
 """
-            
+
             do {
                 try await Task.sleep(nanoseconds: 1_000_000_000) // hack, allow UI time to catch up
             }

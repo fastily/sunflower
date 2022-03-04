@@ -24,6 +24,9 @@ class ModelData: ObservableObject {
     /// The currently selected file (via the sidebar) to show in the detail view (file description editing interface)
     @Published var currSelectedFile: URL?
 
+    /// Indicates whether an upload task is in progress.
+    @Published var uploadIsInProgress = false
+
     /// The currently running background upload task, if applicable.
     var currentUploadTask: Task<(), Never>?
 

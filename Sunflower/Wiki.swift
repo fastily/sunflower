@@ -105,6 +105,12 @@ class Wiki {
             var chunkWasUploaded = false
             
             for errCount in 0..<5 {
+
+                if Task.isCancelled {
+                    try? f.close()
+                    return false
+                }
+
                 log.info("Uploading chunk \(chunkCount+1) of \(totalChunks) from \(path)")
                 
                 if let r = try? await AF.upload(multipartFormData: { multipartFormData in
@@ -158,7 +164,7 @@ class Wiki {
                                                 "filekey": filekey, "tags": "sunflower", "ignorewarnings": "1"]), let result = jo["upload", "result"].string {
             return result == "Success"
         }
-        
+
         return false
     }
     
