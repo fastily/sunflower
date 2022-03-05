@@ -26,10 +26,8 @@ struct MediaListView: View {
                 Section(header: Text("Files to Upload")) {
                     
                     ForEach(modelData.paths, id: \.self) { path in
-                        NavigationLink(destination: DetailView()) {
-                            MediaRowView(uploadCandinate: modelData.uploadCandinates[path]!)
-                        }
-                        .tag(path)
+                        MediaRowView(uploadCandinate: modelData.uploadCandinates[path]!)
+                            .tag(path)
                     }
                     
                 }
@@ -123,8 +121,8 @@ struct MediaListView: View {
                     .help("Login to your Wikimedia account")
                 }
             }
-            
-            Text("Click [+] to add media")
+
+            DetailView()
         }
         .frame(minWidth: 1000, minHeight: 600)
     }

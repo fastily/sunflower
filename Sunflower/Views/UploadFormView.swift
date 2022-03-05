@@ -37,7 +37,6 @@ struct UploadFormView: View {
     }
 }
 
-
 /// Represents a single-line form field for use in an upload form
 fileprivate struct TFView: View {
 
