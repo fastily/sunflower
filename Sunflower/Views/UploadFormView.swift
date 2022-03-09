@@ -4,23 +4,10 @@ import SwiftUI
 struct UploadFormView: View {
 
     /// The `Desc` object backing the fields in this View
-    @State private var d: Desc
-
-    /// The function that gets called whenever the user edits the text of this form.  Should be used to save the value of the form fields.
-    private var saveResult: (Desc) -> ()
-
-    /// Initializer, creates a new `UploadFormView`.
-    /// - Parameters:
-    ///   - d: The `Desc` to populate this form's fields with
-    ///   - saveResult: The function to call whenever the user edits the text of this form.
-    init(_ d: Desc, _ saveResult: @escaping (Desc) -> ()) {
-        self.d = d
-        self.saveResult = saveResult
-    }
+    @Binding var d: Desc
 
     /// The main body of the View
     var body: some View {
-
         Form {
             TFView(title: "Title", binding: $d.title)
             TEView(title: "Description", binding: $d.desc)
@@ -30,9 +17,6 @@ struct UploadFormView: View {
             TFView(title: "Permission", binding: $d.permission)
             TEView(title: "Licensing", binding: $d.lic)
             TEView(title: "Categories", binding: $d.cat)
-        }
-        .onChange(of: d) { newVal in
-            saveResult(newVal)
         }
     }
 }
@@ -84,7 +68,7 @@ fileprivate func makeSectionHeader(_ s: String) -> Text {
 
 struct UploadFormView_Previews: PreviewProvider {
     static var previews: some View {
-        UploadFormView(Desc(), { _ in })
+        UploadFormView(d: .constant(Desc()))
             .frame(minWidth: 900, minHeight: 650)
         
     }

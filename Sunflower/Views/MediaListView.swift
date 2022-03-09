@@ -137,7 +137,6 @@ fileprivate struct DetailView: View {
     
     /// The main body of the View
     var body: some View {
-        
         if let selected = modelData.currSelectedFile {
             FileDescView(uploadCandinate: modelData.uploadCandinates[selected]!)
         }

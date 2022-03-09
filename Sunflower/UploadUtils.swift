@@ -160,12 +160,12 @@ class UploadUtils {
 \(defaultIfEmpty(currUploadCandinate.details.cat, modelData.globalDesc.cat))
 """
 
-            do {
-                try await Task.sleep(nanoseconds: 1_000_000_000) // hack, allow UI time to catch up
-            }
-            catch {
-                break
-            }
+//            do {
+//                try await Task.sleep(nanoseconds: 1_000_000_000) // hack, allow UI time to catch up
+//            }
+//            catch {
+//                break
+//            }
             
             let result: Status = await modelData.wiki.upload(f, title, desc, modelData) ? .success : .error
             await MainActor.run {

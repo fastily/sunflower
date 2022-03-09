@@ -4,7 +4,7 @@ import Foundation
 class ModelData: ObservableObject {
 
     /// The interal representation of the global description object.  This is useful for mass uploads
-    var globalDesc = Desc()
+    @Published var globalDesc = Desc()
     
     /// The main shared Wiki object for Sunflower
     let wiki = Wiki()
