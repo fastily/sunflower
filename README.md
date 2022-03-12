@@ -5,3 +5,6 @@
 [![License: GPL v3](https://upload.wikimedia.org/wikipedia/commons/8/86/GPL_v3_Blue_Badge.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 Sunflower is a macOS app that makes uploading files to the Wikimedia Commons easy.  It is a native macOS app written in Swift and SwiftUI.
+
+## Resources
+* [Documentation](https://commons.wikimedia.org/wiki/Commons:Sunflower)
