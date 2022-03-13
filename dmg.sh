@@ -1,7 +1,17 @@
 #!/usr/bin/env bash
 
-if [ ! -d "$1" ]; then
-	printf "ERROR: '%s' must be a directory containing the target .app\n" "$1"
+#: Creates a dmg from the exported Sunflower app bundle
+#: 
+#: PRECONDITIONS: 
+#:		1) You have installed homebrew create-dmg
+#:
+#: ARGUMENTS:
+#: 		$1 - The directory containing the Sunflower.app
+#: 
+#: Author: Fastily
+
+if [ $# -lt 1 ] || [ ! -d "$1" ]; then
+	printf "Usage: %s <PATH_TO_DIR_WITH_SUNFLOWER_APP>\n" "${0##*/}"
 	exit 1
 fi
 
