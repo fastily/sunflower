@@ -33,8 +33,13 @@ class ModelData: ObservableObject {
     /// Adds a file to the list of files to upload
     /// - Parameter path: The path `URL` to the file to upload
     func addFile(_ path: URL) {
-        uploadCandinates[path] = UploadCandinate(path)
+        let uc = UploadCandinate(path)
+        uploadCandinates[path] = uc
         paths.append(path)
+
+        if let date = UploadUtils.dateFromExif(path) {
+            uc.details.date = date
+        }
     }
     
     /// Removes a file from the ilst of files to upload

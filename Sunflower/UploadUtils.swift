@@ -13,33 +13,43 @@ class UploadUtils {
     
     /// The set of illegal title characters on MediaWiki
     private static let badTitleChars = CharacterSet(charactersIn: "#<>[]{}_|:")
-    
+
     /// Downsamples a raster image so it doesn't take up copious amounts of memory when displayed.  Inspired by [this writeup](https://medium.com/@zippicoder/downsampling-images-for-better-memory-consumption-and-uicollectionview-performance-35e0b4526425).
     /// - Parameters:
     ///   - imageURL: The path to the image to downsample
-    ///   - pointSize: The max height/width in pixels
-    ///   - scale: The dpi scale to use
-    /// - Returns: A downsized image, ready for displaying
-    static func downsampleImage(_ imageURL: URL, to pointSize: CGSize = CGSize(width: 55, height: 55), scale: CGFloat = 1.0) -> Image {
+    ///   - longestEdge: The max height/width in pixels
+    /// - Returns: The downsampled version of `imageURL` as a `CGImage`, otherwise `nil` if something went wrong.
+    static func downsample(_ imageURL: URL, _ longestEdge: Int) -> CGImage? {
 
-        let maxDimensionInPixels = max(pointSize.width, pointSize.height) * scale // Calculate the desired max dimension in pixels
-
-        if let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary), let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, [
-            kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceShouldCacheImmediately: true, kCGImageSourceCreateThumbnailWithTransform: true, kCGImageSourceThumbnailMaxPixelSize: maxDimensionInPixels] as CFDictionary) {
-            return Image(decorative: downsampledImage, scale: scale)
+        let opts = [kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceShouldCacheImmediately: true, kCGImageSourceCreateThumbnailWithTransform: true, kCGImageSourceThumbnailMaxPixelSize: CGFloat(longestEdge)] as CFDictionary
+        if let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary), let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, opts) {
+            return downsampledImage
         }
 
-        return Image("sunflower-generic")
+        return nil
     }
-    
+
+    ///  Extracts the creation date from the specified file's EXIF if possible.  Returns `nil` otherwise.
+    /// - Parameter url: The path to the file to get the creation date from
+    /// - Returns: The creation date, or `nil` if the date was not found.
+    static func dateFromExif(_ url: URL) -> String? {
+        if let src = CGImageSourceCreateWithURL(url as CFURL, nil), let props = CGImageSourceCopyPropertiesAtIndex(src, 0, nil), let d = ((props as? [String: Any])?["{Exif}"] as? [String: Any])?["DateTimeOriginal"] as? String  {
+            let l = d.split(separator: " ")
+            return "\(l[0].description.replacingOccurrences(of: ":", with: "-")) \(l[1])"
+        }
+
+        return nil
+    }
+
+
     /// Check if the specified file is supported for thumbnailing.  See also - `displayableImgExts`
     /// - Parameter p: The file to check
     /// - Returns: `true` if the file can be thumbnailed.
     static func isDisplayableFile(_ p: URL) -> Bool {
         displayableImgExts.contains(UTType(filenameExtension: p.pathExtension)!)
     }
-    
-    
+
+
     /// Checks if a title is a valid title on MediaWiki
     /// - Parameters:
     ///   - title: The title to check
@@ -159,14 +169,6 @@ class UploadUtils {
 [[Category:Uploaded with Sunflower]]
 \(defaultIfEmpty(currUploadCandinate.details.cat, modelData.globalDesc.cat))
 """
-
-//            do {
-//                try await Task.sleep(nanoseconds: 1_000_000_000) // hack, allow UI time to catch up
-//            }
-//            catch {
-//                break
-//            }
-            
             let result: Status = await modelData.wiki.upload(f, title, desc, modelData) ? .success : .error
             await MainActor.run {
                 currUploadCandinate.uploadStatus = result

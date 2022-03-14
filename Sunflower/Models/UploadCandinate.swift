@@ -8,7 +8,10 @@ class UploadCandinate: ObservableObject {
     
     ///  The file description object associated with this `UploadCandinate`
     @Published var details = Desc()
-    
+
+    /// A scaled-down thumbnail for this upload candinate, if applicable.  Can be displayed in the sidebar.
+    let thumbnail: CGImage?
+
     /// The path to the file to upload
     let path: URL
     
@@ -16,6 +19,14 @@ class UploadCandinate: ObservableObject {
     /// - Parameter path: The path to the file to upload
     init(_ path: URL) {
         self.path = path
+
+        if UploadUtils.isDisplayableFile(path), let thumbnail = UploadUtils.downsample(path, 55) {
+            self.thumbnail = thumbnail
+        }
+        else {
+            thumbnail = nil
+        }
+
     }
 }
 

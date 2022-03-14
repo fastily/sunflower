@@ -9,25 +9,9 @@ struct MediaRowView: View {
 
     /// The main body of the View
     var body: some View {
-        LazyHStack {
+        HStack {
             ZStack(alignment: .bottomTrailing) {
-
-                if UploadUtils.isDisplayableFile(uploadCandinate.path) {
-                    UploadUtils.downsampleImage(uploadCandinate.path)
-                        .mediaRowModifier()
-                }
-                else {
-                    let ext = UTType(filenameExtension: uploadCandinate.path.pathExtension)!
-
-                    if ext.conforms(to: .audiovisualContent) || ext.conforms(to: .audio) {
-                        Image("sunflower-media")
-                            .mediaRowModifier()
-                    }
-                    else {
-                        Image("sunflower-generic")
-                            .mediaRowModifier()
-                    }
-                }
+                ThumbView(uploadCandinate: uploadCandinate)
 
                 switch uploadCandinate.uploadStatus {
                 case .standby:
@@ -38,25 +22,47 @@ struct MediaRowView: View {
                     makeStatusIcon("x.circle.fill", .red)
                 }
             }
-            
+
             Text(uploadCandinate.path.lastPathComponent)
                 .padding(.leading, 10)
         }
         .padding()
     }
+}
 
-    /// Creates a status icon with the specified parameters
-    /// - Parameters:
-    ///   - name: The system name of the icon to use
-    ///   - color: The color to use
-    /// - Returns: The image containing a status icon
-    private func makeStatusIcon(_ name: String, _ color: Color) -> some View {
-        Image(systemName: name)
-            .foregroundColor(color)
-            .font(.title2)
-            .background(.white)
-            .clipShape(Circle())
+
+/// Represents the thumbnail icon for the `MediaRowView`.  This view is separate so the image doesn't get repeatedly redrawn.
+fileprivate struct ThumbView: View {
+
+    /// The `UploadCandinate` this view is associated with
+    let uploadCandinate: UploadCandinate
+
+    /// The main body of the View
+    var body: some View {
+        if let rawThumb = uploadCandinate.thumbnail {
+            Image(decorative: rawThumb, scale: 1.0)
+                .mediaRowModifier()
+        }
+        else {
+            let ext = UTType(filenameExtension: uploadCandinate.path.pathExtension)!
+            Image("sunflower-\(ext.conforms(to: .audiovisualContent) || ext.conforms(to: .audio) ? "media" : "generic")")
+                .mediaRowModifier()
+        }
     }
+}
+
+
+/// Creates a status icon with the specified parameters
+/// - Parameters:
+///   - name: The system name of the icon to use
+///   - color: The color to use
+/// - Returns: The image containing a status icon
+fileprivate func makeStatusIcon(_ name: String, _ color: Color) -> some View {
+    Image(systemName: name)
+        .foregroundColor(color)
+        .font(.title2)
+        .background(.white)
+        .clipShape(Circle())
 }
 
 

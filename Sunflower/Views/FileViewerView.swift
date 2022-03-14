@@ -12,10 +12,16 @@ struct FileViewerView: View {
     /// The main body of the View
     var body: some View {
         VStack {
-            UploadUtils.downsampleImage(uploadCandinate.path, to: CGSize(width: 750, height: 750))
-                .resizable()
-                .aspectRatio( contentMode: .fit)
-                .padding(.bottom)
+
+            if let rawThumb = UploadUtils.downsample(uploadCandinate.path, 750) {
+                Image(decorative: rawThumb, scale: 1.0)
+                    .resizable()
+                    .aspectRatio( contentMode: .fit)
+                    .padding(.bottom)
+            }
+            else {
+                Text("Encountered error while generating preview")
+            }
 
             Button("Done") {
                 presentationMode.wrappedValue.dismiss()
