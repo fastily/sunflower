@@ -55,6 +55,7 @@
       "size" : "512x512"
     },
     {
+      "filename" : "[ps new]@2x1024px.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"

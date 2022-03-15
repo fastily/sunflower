@@ -99,16 +99,18 @@ class UploadUtils {
                 return "Global title may not contain a file extension"
             }
         }
-        
-        // check for illegal chars in titles
+
         for c in modelData.uploadCandinates.values {
             c.details.formatForUpload()
 
-            if titleIsBad(c.details.title, hasGlobalTitle) {
+            if titleIsBad(c.details.title, hasGlobalTitle) {  // check for illegal chars in titles
                 return "\"\(c.details.title)\" is not a valid file title for Commons"
             }
+            else if !FileManager.default.fileExists(atPath: c.path.path) { // check for renamed/deleted files
+                return "\"\(c.path.lastPathComponent)\" could not be found"
+            }
         }
-        
+
         return nil
     }
     
