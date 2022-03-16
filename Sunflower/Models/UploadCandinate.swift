@@ -20,7 +20,7 @@ class UploadCandinate: ObservableObject {
     init(_ path: URL) {
         self.path = path
 
-        if UploadUtils.isDisplayableFile(path), let thumbnail = UploadUtils.downsample(path, 55) {
+        if UploadUtils.isDisplayableFile(path), let thumbnail = UIUtils.downsample(path, 55) {
             self.thumbnail = thumbnail
         }
         else {

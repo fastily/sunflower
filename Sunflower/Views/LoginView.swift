@@ -28,20 +28,27 @@ struct LoginView: View {
                 .font(.title)
                 .padding(.bottom, 20)
 
-            Form {
-                TextField("Username", text: $username)
-                SecureField("Password", text: $password)
+            HStack {
+                Spacer()
+                Form {
+                    TextField("Username", text: $username)
+                    SecureField("Password", text: $password)
+                }
+                Spacer()
             }
             .padding(.bottom, 20)
-            .padding(.horizontal, 20)
 
             HStack {
                 Button("Submit") {
+                    if username.isEmpty {
+                        return
+                    }
+
                     loginInProgress = true
 
                     Task {
                         if await modelData.wiki.login(username, password) {
-                            dismissSheet()
+                            UIUtils.dismissSheet(presentationMode)
                             modelData.isLoggedIn = true
                         }
                         else {
@@ -56,7 +63,7 @@ struct LoginView: View {
                 .padding(.trailing, 10)
 
                 Button("Cancel") {
-                    dismissSheet()
+                    UIUtils.dismissSheet(presentationMode)
                 }
                 .disabled(loginInProgress)
             }
@@ -65,12 +72,6 @@ struct LoginView: View {
         .frame(minWidth:400, minHeight:200)
         .padding()
 
-    }
-
-    /// Convenience function, dismiss this view
-    private func dismissSheet() {
-        presentationMode.wrappedValue.dismiss()
-        NSApp.mainWindow?.endSheet(NSApp.keyWindow!) // workaround SwiftUI to show dismiss animation
     }
 }
 

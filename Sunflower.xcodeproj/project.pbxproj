@@ -22,6 +22,7 @@
 		7079762D27A8125400BC59E5 /* Desc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7079762C27A8125400BC59E5 /* Desc.swift */; };
 		707F871D27AEAB2F0067BEDD /* UploadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707F871C27AEAB2F0067BEDD /* UploadState.swift */; };
 		70A0352E272D1E5900C93D6F /* ModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A0352D272D1E5900C93D6F /* ModelData.swift */; };
+		70A663D527E1678600210DC7 /* UIUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A663D427E1678600210DC7 /* UIUtils.swift */; };
 		70AE3D8D274E46240079465E /* Wiki.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70AE3D8C274E46240079465E /* Wiki.swift */; };
 		70AE3D90274E46B80079465E /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 70AE3D8F274E46B80079465E /* Alamofire */; };
 		70CBBFE227A7DE9000ABFB11 /* UploadCandinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70CBBFE127A7DE9000ABFB11 /* UploadCandinate.swift */; };
@@ -47,6 +48,7 @@
 		7079762C27A8125400BC59E5 /* Desc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Desc.swift; sourceTree = "<group>"; };
 		707F871C27AEAB2F0067BEDD /* UploadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadState.swift; sourceTree = "<group>"; };
 		70A0352D272D1E5900C93D6F /* ModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelData.swift; sourceTree = "<group>"; };
+		70A663D427E1678600210DC7 /* UIUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIUtils.swift; sourceTree = "<group>"; };
 		70AE3D8C274E46240079465E /* Wiki.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wiki.swift; sourceTree = "<group>"; };
 		70CBBFE127A7DE9000ABFB11 /* UploadCandinate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadCandinate.swift; sourceTree = "<group>"; };
 		70D14BC827A16F0500F4B26D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -116,11 +118,11 @@
 				707250A22728191000D79682 /* Sunflower.entitlements */,
 				707250992728190E00D79682 /* SunflowerApp.swift */,
 				7010C8B1272E38C900A6EE1F /* SunflowerCommands.swift */,
-				701415F727A6453500B5681A /* UploadUtils.swift */,
 				70AE3D8C274E46240079465E /* Wiki.swift */,
 				7072509D2728191000D79682 /* Assets.xcassets */,
 				70663CC4272C0B81008759BE /* Models */,
 				7072509F2728191000D79682 /* Preview Content */,
+				70A663D327E1676500210DC7 /* Utils */,
 				7066876A27282AE5002E900D /* Views */,
 			);
 			path = Sunflower;
@@ -132,6 +134,15 @@
 				707250A02728191000D79682 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		70A663D327E1676500210DC7 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				70A663D427E1678600210DC7 /* UIUtils.swift */,
+				701415F727A6453500B5681A /* UploadUtils.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -227,6 +238,7 @@
 				70D53A99272EC046009F165A /* UploadFormView.swift in Sources */,
 				70A0352E272D1E5900C93D6F /* ModelData.swift in Sources */,
 				707250A927281E5D00D79682 /* MediaRowView.swift in Sources */,
+				70A663D527E1678600210DC7 /* UIUtils.swift in Sources */,
 				705261B2274A1C5F00030730 /* FileViewerView.swift in Sources */,
 				70663CC1272C09A8008759BE /* GlobalDescView.swift in Sources */,
 			);
@@ -370,7 +382,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.2;
-				MARKETING_VERSION = 0.0.1;
+				MARKETING_VERSION = 0.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = org.fastily.Sunflower;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -398,7 +410,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.2;
-				MARKETING_VERSION = 0.0.1;
+				MARKETING_VERSION = 0.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = org.fastily.Sunflower;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

@@ -14,21 +14,6 @@ class UploadUtils {
     /// The set of illegal title characters on MediaWiki
     private static let badTitleChars = CharacterSet(charactersIn: "#<>[]{}_|:")
 
-    /// Downsamples a raster image so it doesn't take up copious amounts of memory when displayed.  Inspired by [this writeup](https://medium.com/@zippicoder/downsampling-images-for-better-memory-consumption-and-uicollectionview-performance-35e0b4526425).
-    /// - Parameters:
-    ///   - imageURL: The path to the image to downsample
-    ///   - longestEdge: The max height/width in pixels
-    /// - Returns: The downsampled version of `imageURL` as a `CGImage`, otherwise `nil` if something went wrong.
-    static func downsample(_ imageURL: URL, _ longestEdge: Int) -> CGImage? {
-
-        let opts = [kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceShouldCacheImmediately: true, kCGImageSourceCreateThumbnailWithTransform: true, kCGImageSourceThumbnailMaxPixelSize: CGFloat(longestEdge)] as CFDictionary
-        if let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary), let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, opts) {
-            return downsampledImage
-        }
-
-        return nil
-    }
-
     ///  Extracts the creation date from the specified file's EXIF if possible.  Returns `nil` otherwise.
     /// - Parameter url: The path to the file to get the creation date from
     /// - Returns: The creation date, or `nil` if the date was not found.
@@ -41,14 +26,12 @@ class UploadUtils {
         return nil
     }
 
-
     /// Check if the specified file is supported for thumbnailing.  See also - `displayableImgExts`
     /// - Parameter p: The file to check
     /// - Returns: `true` if the file can be thumbnailed.
     static func isDisplayableFile(_ p: URL) -> Bool {
         displayableImgExts.contains(UTType(filenameExtension: p.pathExtension)!)
     }
-
 
     /// Checks if a title is a valid title on MediaWiki
     /// - Parameters:

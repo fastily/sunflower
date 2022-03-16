@@ -12,7 +12,7 @@ struct FileViewerView: View {
     /// The main body of the View
     var body: some View {
         VStack {
-            if FileManager.default.fileExists(atPath: uploadCandinate.path.path), let rawThumb = UploadUtils.downsample(uploadCandinate.path, 750) {
+            if FileManager.default.fileExists(atPath: uploadCandinate.path.path), let rawThumb = UIUtils.downsample(uploadCandinate.path, 750) {
                 Image(decorative: rawThumb, scale: 1.0)
                     .resizable()
                     .aspectRatio( contentMode: .fit)
@@ -23,9 +23,7 @@ struct FileViewerView: View {
             }
 
             Button("Done") {
-                presentationMode.wrappedValue.dismiss()
-                NSApp.mainWindow?.endSheet(NSApp.keyWindow!) // workaround SwiftUI to show dismiss animation
-                
+                UIUtils.dismissSheet(presentationMode)
             }.keyboardShortcut(.defaultAction)
         }
         .padding()

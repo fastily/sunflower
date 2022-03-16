@@ -26,17 +26,11 @@ struct UploadInProgressView: View {
             
             Button("Cancel Upload") {
                 modelData.currentUploadTask?.cancel()
-                dismissSheet()
+                UIUtils.dismissSheet(presentationMode)
             }
         }
         .padding(25)
         .frame(minWidth: 500, minHeight: 300)
-    }
-    
-    /// Convenience function, dismiss this view
-    private func dismissSheet() {
-        presentationMode.wrappedValue.dismiss()
-        NSApp.mainWindow?.endSheet(NSApp.keyWindow!) // workaround SwiftUI to show dismiss animation
     }
 }
 

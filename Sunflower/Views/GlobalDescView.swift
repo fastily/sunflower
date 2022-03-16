@@ -17,9 +17,7 @@ struct GlobalDescView: View {
                 .padding()
             
             Button("Done") {
-                presentationMode.wrappedValue.dismiss()
-                NSApp.mainWindow?.endSheet(NSApp.keyWindow!) // workaround SwiftUI to show dismiss animation
-                
+                UIUtils.dismissSheet(presentationMode)
             }.keyboardShortcut(.defaultAction)
         }
         .frame(minWidth:800, minHeight:400, maxHeight: 650)
